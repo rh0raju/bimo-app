@@ -1,4 +1,4 @@
-const CACHE = 'bimo-v3';
+const CACHE = 'bimo-v6';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-512.png', './ux.js'];
 
 self.addEventListener('install', e => {
