@@ -1,4 +1,4 @@
-# BIMO Privacy Policy (draft)
+# BIMO Privacy Policy
 
 **Last updated: 3 November 2026**
 
