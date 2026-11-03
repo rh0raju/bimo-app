@@ -1,4 +1,4 @@
-# BIMO Terms of Use (draft)
+# BIMO Terms of Use
 
 **Last updated: 3 November 2026**
 
