@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>BIMO Seller Workspace</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; background: #0f172a; color: #f8fafc; font: 14px system-ui, sans-serif; }
+    #status { position: fixed; inset: 0; z-index: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: #cbd5e1; }
+    #app { position: relative; z-index: 1; display: block; width: 100%; height: 100%; border: 0; background: transparent; }
+  </style>
+</head>
+<body>
+  <div id="status" role="status">Loading BIMO and its local seller workspace…</div>
+  <iframe id="app" title="BIMO business workspace" src="./index.html"></iframe>
+  <script>
+    (() => {
+      'use strict';
+      const frame = document.getElementById('app');
+      const status = document.getElementById('status');
+      let attempts = 0;
+
+      function injectWorkspace() {
+        let appWindow;
+        let appDocument;
+        try {
+          appWindow = frame.contentWindow;
+          appDocument = frame.contentDocument;
+          if (!appWindow || !appDocument || !appDocument.body) throw new Error('BIMO frame is not ready');
+        } catch (error) {
+          status.textContent = 'Could not open the BIMO app. Serve this file from the same site as index.html (HTTPS or localhost).';
+          return;
+        }
+
+        if (appWindow.__bimoSellerWorkspaceLoaded || appDocument.querySelector('script[data-bimo-seller-workspace]')) {
+          status.hidden = true;
+          return;
+        }
+
+        if (!appWindow.Bimo || !appWindow.Bimo.session) {
+          attempts += 1;
+          if (attempts < 60) {
+            window.setTimeout(injectWorkspace, 100);
+            return;
+          }
+          status.textContent = 'BIMO core did not finish loading. Check that bimo-core.js and seller-workspace.js are beside index.html.';
+          return;
+        }
+
+        const script = appDocument.createElement('script');
+        script.src = new URL('./seller-workspace.js', appWindow.location.href).href;
+        script.dataset.bimoSellerWorkspace = 'true';
+        script.onload = () => { status.hidden = true; };
+        script.onerror = () => {
+          status.textContent = 'Seller workspace could not load. Check that seller-workspace.js is deployed beside index.html.';
+        };
+        appDocument.head.appendChild(script);
+      }
+
+      frame.addEventListener('load', () => {
+        attempts = 0;
+        injectWorkspace();
+      });
+    })();
+  </script>
+</body>
+</html>
