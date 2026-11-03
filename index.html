@@ -200,6 +200,24 @@
         .hero-banner { background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 212, 255, 0.05)); border: 1px solid var(--border); border-radius: 28px; padding: 40px 30px; text-align: center; }
         .hero-banner h1 { font-size: 30px; font-weight: 800; margin-bottom: 10px; }
         .hero-banner p { font-size: 14px; color: var(--muted); max-width: 650px; margin: 0 auto 20px auto; line-height: 1.6; }
+
+        .settings-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0 5px 0; }
+        .settings-tabs .tab {
+            background: transparent; border: 1px solid var(--border); color: var(--muted);
+            padding: 10px 16px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 600;
+        }
+        .settings-tabs .tab.active { background: rgba(0, 123, 255, 0.15); color: var(--accent); border-color: var(--accent); }
+        .settings-pane { display: none; flex-direction: column; gap: 20px; margin-top: 15px; }
+        .settings-pane.active { display: flex; }
+        textarea {
+            width: 100%; padding: 12px 15px; background: rgba(100, 100, 100, 0.05);
+            border: 1px solid var(--border); color: var(--text); border-radius: 12px;
+            font-size: 14px; font-family: inherit; resize: vertical; box-sizing: border-box;
+        }
+        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); outline: none; }
+        .audit-row { border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; gap: 10px; }
+        .audit-row:last-child { border-bottom: none; }
+        .nav-logo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
     </style>
 </head>
 <body id="appBody">
@@ -227,44 +245,61 @@
             <p id="authSubtitle" style="font-size: 12px; color: var(--muted); margin-bottom: 25px;">Set up your business workspace in under a minute.</p>
 
             <div id="registerFields">
-                <label>Gmail Address (@gmail.com)</label>
-                <input type="email" id="regGmail" placeholder="yourname@gmail.com">
+                <label>Email Address <span style="font-size: 10px; color: var(--muted);">(optional if phone given)</span></label>
+                <input type="email" id="regEmail" maxlength="80" placeholder="yourname@gmail.com">
 
-                <label>Mobile Phone Number</label>
-                <input type="tel" id="regPhone" placeholder="+88017xxxxxxxx">
+                <label>Mobile Phone Number <span style="font-size: 10px; color: var(--muted);">(optional if email given)</span></label>
+                <input type="tel" id="regPhone" maxlength="16" placeholder="+88017xxxxxxxx">
 
                 <label>Business / Brand Name</label>
-                <input type="text" id="regBrandName" placeholder="e.g., Dhaka Threads">
+                <input type="text" id="regBrandName" maxlength="60" placeholder="e.g., Dhaka Threads">
 
-                <label>Your Official Website / Page Link</label>
-                <input type="url" id="regBrandUrl" placeholder="https://facebook.com/yourpage">
+                <label>Business Type</label>
+                <select id="regBrandType">
+                    <option value="Facebook Page">Facebook Page</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="Website / E-commerce">Website / E-commerce</option>
+                    <option value="Daraz">Daraz</option>
+                    <option value="WhatsApp Business">WhatsApp Business</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label>Page / Website Link <span style="font-size: 10px; color: var(--muted);">(optional)</span></label>
+                <input type="url" id="regBrandUrl" maxlength="200" placeholder="https://facebook.com/yourpage">
+
+                <label>Business Logo <span style="font-size: 10px; color: var(--muted);">(optional, shown as your profile)</span></label>
+                <input type="file" id="regLogo" accept="image/*">
             </div>
 
-            <div id="loginFieldEmail" style="display: none;">
-                <label>Registered Gmail</label>
-                <input type="email" id="loginGmail" placeholder="yourname@gmail.com">
+            <div id="loginFields" style="display: none;">
+                <label>Email or Phone</label>
+                <input type="text" id="loginId" maxlength="80" placeholder="yourname@gmail.com or +88017xxxxxxxx">
             </div>
 
             <div id="recoveryFields" style="display: none;">
-                <label>Registered Gmail</label>
-                <input type="email" id="recGmail" placeholder="yourname@gmail.com">
+                <label>Email or Phone (registered)</label>
+                <input type="text" id="recId" maxlength="80" placeholder="yourname@gmail.com or +88017xxxxxxxx">
 
-                <label>Registered Mobile Number</label>
-                <input type="tel" id="recPhone" placeholder="+88017xxxxxxxx">
+                <label>Verify another saved detail <span style="font-size: 10px; color: var(--muted);">(phone, email or business name)</span></label>
+                <input type="text" id="recVerify" maxlength="80" placeholder="e.g., your phone number or business name">
             </div>
 
             <div id="resetFields" style="display: none;">
                 <label>New Password</label>
-                <input type="password" id="recNewPass" placeholder="New secure password">
+                <input type="password" id="recNewPass" maxlength="72" placeholder="New secure password">
 
                 <label>Confirm New Password</label>
-                <input type="password" id="recConfirmPass" placeholder="Repeat new password">
+                <input type="password" id="recConfirmPass" maxlength="72" placeholder="Repeat new password">
             </div>
 
-            <label id="passLabel">Secure Password <span id="passHint" style="font-size: 10px; color: var(--warning);">(Must include Capital &amp; Lowercase letters)</span></label>
-            <input type="password" id="passInput" placeholder="e.g., Secure@123">
+            <label id="passLabel">Password <span id="passHint" style="font-size: 10px; color: var(--warning);">(8+ chars, Capital &amp; Lowercase letters)</span></label>
+            <input type="password" id="passInput" maxlength="72" placeholder="e.g., Secure@123">
 
             <button type="button" class="btn" onclick="handleAuthAction()" id="authActionBtn">Create Account</button>
+            <div id="googleWrap" style="margin-top: 10px;">
+                <div id="googleBtnDiv" style="display: flex; justify-content: center;"></div>
+                <button type="button" class="btn btn-outline" onclick="signInWithGoogle()" id="googleBtn">Continue with Google</button>
+            </div>
             <button type="button" class="btn btn-outline" onclick="toggleAuthMode()" id="switchModeBtn" style="margin-top: 10px;">Already have an account? Login</button>
             <button type="button" class="auth-link" onclick="showRecovery()" id="forgotBtn" style="display: none;">Forgot password?</button>
             <button type="button" class="btn btn-outline" onclick="backToLogin()" id="backToLoginBtn" style="margin-top: 10px; display: none;">Back to Login</button>
@@ -312,6 +347,22 @@
                     <div class="card"><h3>Total Revenue</h3><div class="value">৳<span id="homeRevenue">0</span></div><div class="sub-value">Collected from paid orders</div></div>
                     <div class="card"><h3>Due Amount</h3><div class="value" style="color: var(--warning);">৳<span id="homeDueAmount">0</span></div><div class="sub-value">Pending collection (non-cancelled)</div></div>
                     <div class="card"><h3>Account Status</h3><div class="value" style="color: var(--success); font-size: 22px;">Secured</div><div class="sub-value" id="cardUserGmail">user@gmail.com</div></div>
+                </div>
+
+                <div id="connectBizBanner" class="card" style="display: none; border-color: var(--accent);">
+                    <h3 style="color: var(--accent);">Connect your business</h3>
+                    <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">Add your e-commerce site, Facebook page or business name and logo so customers recognise your profile.</p>
+                    <button type="button" class="btn" style="width: auto; padding: 10px 20px;" onclick="navigateTo('settings'); openSettingsTab('profile')">Connect Business</button>
+                </div>
+
+                <div class="card">
+                    <h3>AI Business Assistant <span id="aiStatus" style="text-transform: none; letter-spacing: 0; color: var(--muted);"></span></h3>
+                    <textarea id="aiQuestion" rows="2" maxlength="500" placeholder="Ask about your business, e.g., How can I collect pending dues faster?"></textarea>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button type="button" class="btn" style="width: auto; padding: 10px 20px;" onclick="askAI()">Ask AI</button>
+                        <button type="button" class="btn btn-outline" style="width: auto; padding: 10px 20px;" onclick="document.getElementById('aiAnswer').textContent=''">Clear</button>
+                    </div>
+                    <div id="aiAnswer" style="margin-top: 15px; font-size: 13px; line-height: 1.6; white-space: pre-wrap; display: none;"></div>
                 </div>
             </section>
 
@@ -374,15 +425,119 @@
 
             <!-- SETTINGS -->
             <section id="page-settings" class="page-section">
-                <h2 style="font-size: 22px; font-weight: 800;">Account &amp; Branding Settings</h2>
-                <div class="card" style="max-width: 500px; margin-top: 10px;">
-                    <label>Brand / Shop Name</label>
-                    <input type="text" id="settingBrandName">
-                    <label>Official Page / Site Link</label>
-                    <input type="url" id="settingBrandUrl">
-                    <label>Mobile Phone</label>
-                    <input type="tel" id="settingPhone">
-                    <button type="button" class="btn" onclick="saveUserSettings()">Update Profile</button>
+                <h2 style="font-size: 22px; font-weight: 800;">Settings</h2>
+                <div class="settings-tabs">
+                    <button type="button" class="tab active" id="tab-profile" onclick="openSettingsTab('profile')">Business Profile</button>
+                    <button type="button" class="tab" id="tab-security" onclick="openSettingsTab('security')">Security</button>
+                    <button type="button" class="tab" id="tab-ai" onclick="openSettingsTab('ai')">AI Integration</button>
+                    <button type="button" class="tab" id="tab-data" onclick="openSettingsTab('data')">Data &amp; Backup</button>
+                </div>
+
+                <div id="settings-profile" class="settings-pane active">
+                    <div class="card" style="max-width: 500px;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                            <div class="nav-logo-box" id="settingsAvatar" style="width: 64px; height: 64px; font-size: 26px; border-radius: 16px;">B</div>
+                            <div>
+                                <b id="settingsBrandPreview">Business</b>
+                                <p style="font-size: 12px; color: var(--muted);" id="settingsBrandTypePreview"></p>
+                            </div>
+                        </div>
+                        <label>Business / Brand Name</label>
+                        <input type="text" id="settingBrandName" maxlength="60">
+                        <label>Business Type</label>
+                        <select id="settingBrandType">
+                            <option value="Facebook Page">Facebook Page</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Website / E-commerce">Website / E-commerce</option>
+                            <option value="Daraz">Daraz</option>
+                            <option value="WhatsApp Business">WhatsApp Business</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <label>Official Page / Site Link</label>
+                        <input type="url" id="settingBrandUrl" maxlength="200">
+                        <label>Mobile Phone</label>
+                        <input type="tel" id="settingPhone" maxlength="16">
+                        <label>Email</label>
+                        <input type="email" id="settingEmail" maxlength="80">
+                        <label>Business Logo <span style="font-size: 10px; color: var(--muted);">(square image works best)</span></label>
+                        <input type="file" id="settingLogo" accept="image/*">
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
+                            <button type="button" class="btn" onclick="saveUserSettings()">Save Profile</button>
+                            <button type="button" class="btn btn-outline" onclick="removeLogo()">Remove Logo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-security" class="settings-pane">
+                    <div class="card" style="max-width: 500px;">
+                        <h3>Change Password</h3>
+                        <label>Current Password</label>
+                        <input type="password" id="currentPass" maxlength="72" autocomplete="current-password">
+                        <label>New Password</label>
+                        <input type="password" id="newPass" maxlength="72" autocomplete="new-password">
+                        <button type="button" class="btn" onclick="changePasswordUI()">Update Password</button>
+                    </div>
+                    <div class="card" style="max-width: 500px;">
+                        <h3>Data Integrity</h3>
+                        <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">Verify that your order ledger and audit trail have not been modified outside the app.</p>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn" style="width: auto; padding: 10px 18px;" onclick="runIntegrityCheck()">Run Integrity Check</button>
+                        </div>
+                        <p id="integrityResult" style="font-size: 13px; margin-top: 12px; display: none;"></p>
+                    </div>
+                    <div class="card" style="max-width: 500px;">
+                        <h3>Activity Log</h3>
+                        <div id="auditList" style="max-height: 260px; overflow-y: auto; font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+                </div>
+
+                <div id="settings-ai" class="settings-pane">
+                    <div class="card" style="max-width: 500px;">
+                        <h3>Personal AI Provider</h3>
+                        <p style="font-size: 12px; color: var(--muted); margin-bottom: 15px;">Use your own AI API key (OpenAI-compatible). The key is stored only on this device and sent only to the provider you choose.</p>
+                        <label>Provider</label>
+                        <select id="aiProvider" onchange="onAIProviderChange()">
+                            <option value="">Select a provider…</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="groq">Groq</option>
+                            <option value="openrouter">OpenRouter</option>
+                            <option value="custom">Custom (OpenAI-compatible)</option>
+                        </select>
+                        <label>API Base URL</label>
+                        <input type="url" id="aiBaseUrl" maxlength="200" placeholder="https://api.openai.com/v1">
+                        <label>API Key</label>
+                        <input type="password" id="aiApiKey" maxlength="200" placeholder="sk-...">
+                        <label>Model</label>
+                        <input type="text" id="aiModel" maxlength="60" placeholder="gpt-4o-mini">
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
+                            <button type="button" class="btn" onclick="saveAIConfig()">Save AI Settings</button>
+                            <button type="button" class="btn btn-outline" onclick="testAIConnection()">Test Connection</button>
+                        </div>
+                        <p id="aiTestResult" style="font-size: 13px; margin-top: 12px; display: none;"></p>
+                    </div>
+                    <div class="card" style="max-width: 500px;">
+                        <h3>Google Sign-In (site owner)</h3>
+                        <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">To enable "Continue with Google" on the login page, create an OAuth Client ID (type: Web application, origin = this site's URL) in Google Cloud Console and paste it here.</p>
+                        <label>Google OAuth Client ID</label>
+                        <input type="text" id="gsiClientId" maxlength="200" placeholder="xxxxxxxx.apps.googleusercontent.com">
+                        <button type="button" class="btn" onclick="saveGsiClientId()">Save Client ID</button>
+                    </div>
+                </div>
+
+                <div id="settings-data" class="settings-pane">
+                    <div class="card" style="max-width: 500px;">
+                        <h3>Backup</h3>
+                        <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">Download a portable copy of your profile, orders and activity log, or restore from a previous backup file.</p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" class="btn" style="width: auto; padding: 10px 18px;" onclick="exportBackup()">⬇ Export Backup</button>
+                            <label class="btn btn-outline" style="width: auto; padding: 10px 18px; margin: 0; display: inline-block;">⬆ Import Backup<input type="file" id="importBackupFile" accept="application/json" style="display: none;" onchange="importBackup(event)"></label>
+                        </div>
+                    </div>
+                    <div class="card" style="max-width: 500px; border-color: var(--danger);">
+                        <h3 style="color: var(--danger);">Danger Zone</h3>
+                        <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">Permanently delete this account, its orders and its activity log from this device. This cannot be undone.</p>
+                        <button type="button" class="btn btn-lock" onclick="deleteAccount()">Delete Account &amp; Data</button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -444,23 +599,27 @@
         </div>
     </div>
 
+    <script src="bimo-core.js"></script>
     <script>
         const ua = navigator.userAgent || navigator.vendor || window.opera;
         const bodyEl = document.getElementById('appBody');
         if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) bodyEl.classList.add('is-ios');
         else if (/android/i.test(ua)) bodyEl.classList.add('is-android');
 
+        const el = id => document.getElementById(id);
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
         // TOAST SYSTEM
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> <span>${message}</span>`;
+            toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> <span>${esc(message)}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 3500);
         }
 
         // THEME SWITCHER
@@ -470,102 +629,33 @@
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('bimo_theme', newTheme);
-
-            document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
-            document.getElementById('themeText').textContent = newTheme === 'dark' ? 'Light' : 'Dark';
+            syncThemeButtons(newTheme);
         }
-
+        function syncThemeButtons(theme) {
+            document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = theme === 'dark' ? 'Light' : 'Dark';
+        }
         const savedTheme = localStorage.getItem('bimo_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        document.getElementById('themeText').textContent = savedTheme === 'dark' ? 'Light' : 'Dark';
+        syncThemeButtons(savedTheme);
 
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('splashScreen').style.opacity = '0';
                 document.getElementById('splashScreen').style.visibility = 'hidden';
-                checkSession();
             }, 900);
         });
 
-        // AUTH: register / login / recover / reset
-        // PWA INSTALL
-        let deferredInstall = null;
-        function isStandalone() {
-            return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-        }
-        function syncInstallBtn() {
-            const btn = document.getElementById('installBtn');
-            btn.style.display = (deferredInstall && !isStandalone()) ? 'inline-flex' : 'none';
-        }
-        function promptInstall() {
-            if (deferredInstall) {
-                deferredInstall.prompt();
-                deferredInstall.userChoice.then(() => {
-                    deferredInstall = null;
-                    syncInstallBtn();
-                });
-            } else {
-                showToast('To install: open your browser menu and choose "Add to Home Screen" / "Install App".');
-            }
-        }
-        window.addEventListener('beforeinstallprompt', e => {
-            e.preventDefault();
-            deferredInstall = e;
-            syncInstallBtn();
-        });
-        window.addEventListener('appinstalled', () => {
-            deferredInstall = null;
-            syncInstallBtn();
-            showToast('BIMO installed! Find it on your home screen.');
-        });
-
-        // BUG REPORT (Netlify Form)
-        function openBugModal() {
-            const user = JSON.parse(localStorage.getItem('bimo_active_user') || 'null');
-            if (user) document.getElementById('bugEmail').value = user.gmail;
-            document.getElementById('bugModal').classList.add('active');
-        }
-        function closeBugModal() {
-            document.getElementById('bugModal').classList.remove('active');
-        }
-        function submitBugReport(e) {
-            e.preventDefault();
-            const form = e.target;
-            const email = document.getElementById('bugEmail').value.trim();
-            const message = document.getElementById('bugMessage').value.trim();
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast('Please enter a valid email address.', 'error');
-                return false;
-            }
-            if (message.length < 10) {
-                showToast('Please describe the bug in at least 10 characters.', 'error');
-                return false;
-            }
-            fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(new FormData(form)).toString()
-            }).then(() => {
-                form.reset();
-                closeBugModal();
-                showToast('Bug report sent. Thank you for helping improve BIMO!');
-            }).catch(() => {
-                showToast('Could not send the report. Check your connection and try again.', 'error');
-            });
-            return false;
-        }
-
+        // ---------- AUTH (login / register / recover / reset) ----------
         let authMode = 'register';
-        let recoveryGmail = null;
-
-        const el = id => document.getElementById(id);
-        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+        let recoveryKey = null;
+        let regLogoData = '';
+        let installAvailable = false;
 
         const AUTH_COPY = {
-            register: { title: 'Create your account', sub: 'Set up your business workspace in under a minute.', btn: 'Create Account' },
-            login:    { title: 'Welcome back', sub: 'Sign in to continue to your workspace.', btn: 'Login' },
-            recover:  { title: 'Reset your password', sub: 'Verify your registered Gmail and mobile number.', btn: 'Verify Details' },
+            register: { title: 'Create your account', sub: 'Sign up with email or phone and set up your business profile.', btn: 'Sign Up' },
+            login:    { title: 'Welcome back', sub: 'Sign in with your email or phone and password.', btn: 'Login' },
+            recover:  { title: 'Account recovery', sub: 'Enter your registered email or phone, plus one other saved detail.', btn: 'Verify Details' },
             reset:    { title: 'Set a new password', sub: 'Choose a new password for your account.', btn: 'Update Password' }
         };
 
@@ -575,15 +665,17 @@
             const isReg = mode === 'register', isLogin = mode === 'login', isRec = mode === 'recover', isReset = mode === 'reset';
 
             el('registerFields').style.display = isReg ? 'block' : 'none';
-            el('loginFieldEmail').style.display = isLogin ? 'block' : 'none';
+            el('loginFields').style.display = isLogin ? 'block' : 'none';
             el('recoveryFields').style.display = isRec ? 'block' : 'none';
             el('resetFields').style.display = isReset ? 'block' : 'none';
             el('passLabel').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('passInput').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('passHint').style.display = isReg ? 'inline' : 'none';
+            el('googleWrap').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('forgotBtn').style.display = isLogin ? 'block' : 'none';
             el('switchModeBtn').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('backToLoginBtn').style.display = (isRec || isReset) ? 'block' : 'none';
+            el('switchModeBtn').textContent = isReg ? 'Already have an account? Login' : "Don't have an account? Sign Up";
 
             el('authTitle').textContent = copy.title;
             el('authSubtitle').textContent = copy.sub;
@@ -594,64 +686,12 @@
             setAuthView(authMode === 'register' ? 'login' : 'register');
             el('passInput').value = '';
         }
-
-        function showRecovery() {
-            recoveryGmail = null;
-            setAuthView('recover');
-        }
-
+        function showRecovery() { recoveryKey = null; setAuthView('recover'); }
         function backToLogin() {
-            recoveryGmail = null;
+            recoveryKey = null;
             setAuthView('login');
             el('recNewPass').value = '';
             el('recConfirmPass').value = '';
-        }
-
-        function passError(pass) {
-            if (!pass || pass.length < 6) return 'Password must be at least 6 characters.';
-            if (!/[A-Z]/.test(pass) || !/[a-z]/.test(pass)) return 'Password must include Capital & Lowercase letters.';
-            return null;
-        }
-
-        // Salted SHA-256 password storage (migrates legacy plaintext on login)
-        function newSalt() {
-            const a = new Uint8Array(16);
-            crypto.getRandomValues(a);
-            return Array.from(a).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-        async function hashPass(pass, salt) {
-            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + ':' + pass));
-            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-        async function makePassRecord(pass) {
-            const salt = newSalt();
-            return salt + ':' + await hashPass(pass, salt);
-        }
-        async function verifyPass(pass, user) {
-            if (user.passHash) {
-                const [salt, h] = user.passHash.split(':');
-                return (await hashPass(pass, salt)) === h;
-            }
-            return user.pass !== undefined && user.pass === pass;
-        }
-
-        async function upgradeLegacyPass(user, users, pass) {
-            if (!user.passHash && user.pass !== undefined) {
-                user.passHash = await makePassRecord(pass);
-                delete user.pass;
-                users[user.gmail] = user;
-                localStorage.setItem('bimo_users_db', JSON.stringify(users));
-            }
-        }
-
-        function checkSession() {
-            const activeUser = localStorage.getItem('bimo_active_user');
-            if (activeUser) {
-                showAppShell(JSON.parse(activeUser));
-            } else {
-                setAuthView('login');
-                document.getElementById('authScreen').classList.add('active');
-            }
         }
 
         async function handleAuthAction() {
@@ -661,191 +701,534 @@
             if (authMode === 'reset') return handleResetPassword();
         }
 
+        // Resize any image file to a small square data URL (max 256px) before storing.
+        function fileToLogoData(file) {
+            return new Promise(resolve => {
+                if (!file || !file.type.startsWith('image/')) return resolve('');
+                const reader = new FileReader();
+                reader.onerror = () => resolve('');
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onerror = () => resolve('');
+                    img.onload = () => {
+                        const size = 256;
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size; canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+                        const scale = Math.max(size / img.width, size / img.height);
+                        const w = img.width * scale, h = img.height * scale;
+                        ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+                        try { resolve(canvas.toDataURL('image/jpeg', 0.85)); } catch (e) { resolve(''); }
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        el('regLogo').addEventListener('change', async e => {
+            regLogoData = await fileToLogoData(e.target.files[0]);
+            if (regLogoData) showToast('Logo ready. Save your profile to apply it.');
+        });
+
         async function handleRegister() {
-            const gmail = el('regGmail').value.trim().toLowerCase();
+            const email = el('regEmail').value.trim().toLowerCase();
             const phone = el('regPhone').value.trim();
             const brandName = el('regBrandName').value.trim();
+            const brandType = el('regBrandType').value;
             const brandUrl = el('regBrandUrl').value.trim();
-            const pass = el('passInput').value.trim();
+            const pass = el('passInput').value;
 
-            if (!gmail || !phone || !brandName || !brandUrl) {
-                showToast('All registration fields are required!', 'error');
-                return;
-            }
-            if (!gmail.endsWith('@gmail.com')) {
-                showToast('Please enter a valid Gmail address ending with @gmail.com', 'error');
-                return;
-            }
-            const err = passError(pass);
+            if (!brandName) { showToast('Business / brand name is required.', 'error'); return; }
+            if (!email && !phone) { showToast('Enter an email or a phone number — at least one is required.', 'error'); return; }
+            if (email && !Bimo.validate.email(email)) { showToast('The email address is not valid.', 'error'); return; }
+            if (phone && !Bimo.validate.phone(phone)) { showToast('The phone number is not valid (digits only, optional +).', 'error'); return; }
+            if (!Bimo.validate.url(brandUrl)) { showToast('The business link must start with http:// or https://', 'error'); return; }
+            const err = Bimo.validate.password(pass);
             if (err) { showToast(err, 'error'); return; }
 
-            let users = JSON.parse(localStorage.getItem('bimo_users_db') || '{}');
-            if (users[gmail]) {
-                showToast('An account with this Gmail already exists!', 'error');
-                return;
-            }
+            const { user, error } = await Bimo.accounts.create({ email, phone, brandName, brandType, brandUrl, logo: regLogoData, pass });
+            if (error) { showToast(error, 'error'); return; }
 
-            const newUser = { gmail, phone, brandName, brandUrl, passHash: await makePassRecord(pass) };
-            users[gmail] = newUser;
-            localStorage.setItem('bimo_users_db', JSON.stringify(users));
-            localStorage.setItem('bimo_active_user', JSON.stringify(newUser));
-
-            showAppShell(newUser);
-            showToast('Account created successfully!');
+            el('passInput').value = '';
+            showAppShell(Bimo.session.start(user));
+            showToast('Account created. Welcome to BIMO!');
         }
 
         async function handleLogin() {
-            const gmail = el('loginGmail').value.trim().toLowerCase();
+            const identifier = el('loginId').value.trim();
             const pass = el('passInput').value;
+            if (!identifier) { showToast('Enter your email or phone number.', 'error'); return; }
 
-            let users = JSON.parse(localStorage.getItem('bimo_users_db') || '{}');
-            const user = users[gmail];
-            if (!user) {
-                showToast('Account not found with this Gmail address.', 'error');
-                return;
-            }
+            const { user, error } = await Bimo.auth.login(identifier, pass);
+            if (error) { showToast(error, 'error'); return; }
 
-            if (!(await verifyPass(pass, user))) {
-                showToast('Incorrect password entered.', 'error');
-                return;
-            }
-
-            await upgradeLegacyPass(user, users, pass);
-
-            localStorage.setItem('bimo_active_user', JSON.stringify(user));
             el('passInput').value = '';
             showAppShell(user);
-            showToast('Welcome back to your workspace!');
+            showToast('Welcome back!');
+        }
+
+        function detailType(user, val) {
+            const v = String(val || '').toLowerCase();
+            if (Bimo.validate.phone(v) && String(user.phone || '').replace(/[^0-9]/g, '') === v.replace(/[^0-9]/g, '') && v.replace(/[^0-9]/g, '')) return 'phone';
+            if (user.email && v === String(user.email).toLowerCase()) return 'email';
+            if (user.brandName && v === String(user.brandName).toLowerCase()) return 'brand';
+            return null;
         }
 
         function handleRecoverVerify() {
-            const gmail = el('recGmail').value.trim().toLowerCase();
-            const phone = el('recPhone').value.trim();
+            const id = el('recId').value.trim();
+            const verify = el('recVerify').value.trim();
+            if (!id || !verify) { showToast('Fill in both fields to verify your identity.', 'error'); return; }
 
-            if (!gmail || !phone) {
-                showToast('Enter your Gmail and registered mobile number.', 'error');
-                return;
-            }
+            const user = Bimo.accounts.find(id);
+            const idType = user ? detailType(user, id) : null;
+            if (!user || !idType) { showToast('No account found for those details.', 'error'); return; }
 
-            const users = JSON.parse(localStorage.getItem('bimo_users_db') || '{}');
-            const user = users[gmail];
-            if (!user || String(user.phone).trim() !== phone) {
-                showToast('No account matches those details.', 'error');
-                return;
-            }
+            const verifyType = detailType(user, verify);
+            if (!verifyType) { showToast('The verification detail does not match this account.', 'error'); return; }
+            if (verifyType === idType) { showToast('Use a different saved detail than your login identifier.', 'error'); return; }
 
-            recoveryGmail = gmail;
+            recoveryKey = Bimo.accountKeyOf(user);
             setAuthView('reset');
         }
 
         async function handleResetPassword() {
             const p1 = el('recNewPass').value;
             const p2 = el('recConfirmPass').value;
-
-            const err = passError(p1);
+            const err = Bimo.validate.password(p1);
             if (err) { showToast(err, 'error'); return; }
-            if (p1 !== p2) {
-                showToast('Passwords do not match.', 'error');
-                return;
-            }
+            if (p1 !== p2) { showToast('Passwords do not match.', 'error'); return; }
+            if (!recoveryKey) { backToLogin(); return; }
 
-            if (!recoveryGmail) { backToLogin(); return; }
-
-            let users = JSON.parse(localStorage.getItem('bimo_users_db') || '{}');
-            if (!users[recoveryGmail]) { backToLogin(); return; }
-
-            users[recoveryGmail].passHash = await makePassRecord(p1);
-            delete users[recoveryGmail].pass;
-            localStorage.setItem('bimo_users_db', JSON.stringify(users));
+            const result = await Bimo.auth.resetPassword(recoveryKey, p1);
+            if (result.error) { showToast(result.error, 'error'); return; }
 
             showToast('Password updated. Please login.');
-            const gmail = recoveryGmail;
+            const key = recoveryKey;
             backToLogin();
-            el('loginGmail').value = gmail;
-            recoveryGmail = null;
+            el('loginId').value = key;
         }
 
-        function showAppShell(user) {
+        // ---------- Google Sign-In (requires site-owner OAuth Client ID) ----------
+        function getGsiClientId() { return Bimo.store.get(Bimo.keys.gsi, ''); }
+        function saveGsiClientId() {
+            const id = el('gsiClientId').value.trim();
+            Bimo.store.set(Bimo.keys.gsi, id);
+            showToast(id ? 'Google Client ID saved.' : 'Google Client ID cleared.');
+            setupGoogleButton();
+        }
+        function loadGsiScript() {
+            return new Promise(resolve => {
+                if (window.google && window.google.accounts) return resolve();
+                const s = document.createElement('script');
+                s.src = 'https://accounts.google.com/gsi/client';
+                s.async = true;
+                s.onload = resolve;
+                s.onerror = resolve;
+                document.head.appendChild(s);
+            });
+        }
+        async function setupGoogleButton() {
+            const clientId = getGsiClientId();
+            el('googleBtnDiv').innerHTML = '';
+            if (!clientId) return;
+            await loadGsiScript();
+            if (!window.google || !window.google.accounts || !window.google.accounts.id) return;
+            window.google.accounts.id.initialize({
+                client_id: clientId,
+                callback: handleGoogleCredential
+            });
+            window.google.accounts.id.renderButton(el('googleBtnDiv'), { theme: 'filled_blue', size: 'large', width: 320, text: 'continue_with' });
+            el('googleBtn').style.display = 'none';
+        }
+        function signInWithGoogle() {
+            const clientId = getGsiClientId();
+            if (!clientId) {
+                showToast('Google sign-in is not configured yet. A Google OAuth Client ID can be added in Settings → AI Integration.', 'error');
+                return;
+            }
+            if (window.google && window.google.accounts && window.google.accounts.id) {
+                window.google.accounts.id.prompt();
+            } else {
+                showToast('Google services could not be loaded. Check your connection.', 'error');
+            }
+        }
+        async function handleGoogleCredential(response) {
+            try {
+                const payload = JSON.parse(decodeURIComponent(atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+                const clientId = getGsiClientId();
+                if (payload.aud !== clientId || (payload.exp * 1000) < Date.now()) {
+                    showToast('Google sign-in could not be verified.', 'error');
+                    return;
+                }
+                const email = String(payload.email || '').toLowerCase();
+                if (!Bimo.validate.email(email)) { showToast('Google account has no usable email.', 'error'); return; }
+
+                let user = Bimo.accounts.find(email);
+                if (user) {
+                    Bimo.audit.log(Bimo.accountKeyOf(user), 'LOGIN_SUCCESS', { via: 'google' });
+                } else {
+                    const created = await Bimo.accounts.create({
+                        email,
+                        brandName: Bimo.validate.text(payload.name, 60) || 'My Business',
+                        brandType: 'Website / E-commerce',
+                        logo: payload.picture || '',
+                        provider: 'google'
+                    });
+                    if (created.error) { showToast(created.error, 'error'); return; }
+                    user = created.user;
+                }
+                showAppShell(Bimo.session.start(user));
+                showToast('Signed in with Google!');
+            } catch (e) {
+                showToast('Google sign-in failed.', 'error');
+            }
+        }
+
+        function checkSession() {
+            const user = Bimo.session.active();
+            if (user) {
+                showAppShell(user);
+            } else {
+                setAuthView('login');
+                document.getElementById('authScreen').classList.add('active');
+                setupGoogleButton();
+            }
+        }
+
+        // ---------- APP SHELL ----------
+        function renderAvatar(user, box) {
+            if (user.logo && user.logo.startsWith('data:image/')) {
+                box.innerHTML = `<img src="${esc(user.logo)}" alt="logo">`;
+            } else if (/^https?:\/\//.test(user.logo || '')) {
+                box.innerHTML = `<img src="${esc(user.logo)}" alt="logo" onerror="this.remove()">`;
+            } else {
+                box.textContent = (user.brandName || 'B').charAt(0).toUpperCase();
+            }
+        }
+
+        async function showAppShell(user) {
+            ensureUserSec(Bimo.accountKeyOf(user));
             document.getElementById('authScreen').classList.remove('active');
             const shell = document.getElementById('appShell');
             shell.style.display = 'flex';
             setTimeout(() => shell.classList.add('active'), 50);
 
-            document.getElementById('navBrandTitle').textContent = user.brandName;
-            document.getElementById('navBrandLinkText').textContent = user.brandUrl.replace('https://','').replace('http://','');
-            document.getElementById('brandLinkTarget').href = /^https?:\/\//i.test(user.brandUrl) ? user.brandUrl : '#';
-            document.getElementById('navLogoBox').textContent = user.brandName.charAt(0).toUpperCase();
-            document.getElementById('cardUserGmail').textContent = user.gmail;
-            document.getElementById('welcomeBannerTitle').textContent = user.brandName + " Workspace";
+            renderAvatar(user, el('navLogoBox'));
+            renderAvatar(user, el('settingsAvatar'));
+            el('navBrandTitle').textContent = user.brandName || 'BIMO Business';
+            const url = user.brandUrl || '';
+            el('navBrandLinkText').textContent = url ? url.replace(/^https?:\/\//, '') : 'Connect business ↗';
+            el('brandLinkTarget').href = /^https?:\/\//.test(url) ? url : '#';
+            el('cardUserGmail').textContent = user.email || user.phone || '';
+            el('welcomeBannerTitle').textContent = (user.brandName || 'Your business') + ' Workspace';
+            el('heroSubtitle').textContent = user.brandUrl
+                ? 'Your workspace, orders and finances — all in one secured dashboard.'
+                : 'Connect your Facebook page, e-commerce site or business to personalise your workspace.';
 
-            document.getElementById('settingBrandName').value = user.brandName;
-            document.getElementById('settingBrandUrl').value = user.brandUrl;
-            document.getElementById('settingPhone').value = user.phone;
+            el('connectBizBanner').style.display = (!user.brandUrl && !user.logo) ? 'block' : 'none';
+
+            el('settingBrandName').value = user.brandName || '';
+            el('settingBrandType').value = user.brandType || 'Other';
+            el('settingBrandUrl').value = user.brandUrl || '';
+            el('settingPhone').value = user.phone || '';
+            el('settingEmail').value = user.email || '';
 
             syncInstallBtn();
+            renderAudit(user);
+            await verifyLedgerSilent(user);
             refreshMetrics();
         }
 
+        function ensureUserSec(key) {
+            if (!Bimo.store.get(Bimo.keys.sec(key), '')) {
+                Bimo.store.set(Bimo.keys.sec(key), Bimo.randomHex(32));
+            }
+        }
+
+        async function verifyLedgerSilent(user) {
+            const key = Bimo.accountKeyOf(user);
+            ensureUserSec(key);
+            const ok = await Bimo.ledger.verify(key, Bimo.store.get(Bimo.keys.orders(key), []));
+            if (!ok) {
+                showToast('SECURITY WARNING: order ledger integrity check failed. Data may have been modified outside the app. Check Settings → Security.', 'error');
+                Bimo.audit.log(key, 'LEDGER_TAMPER_DETECTED', {});
+            }
+            return ok;
+        }
+
         function logout() {
-            localStorage.removeItem('bimo_active_user');
+            const user = Bimo.session.active();
+            if (user) Bimo.audit.log(Bimo.accountKeyOf(user), 'LOGOUT', {});
+            Bimo.session.end();
             document.getElementById('appShell').classList.remove('active');
             document.getElementById('appShell').style.display = 'none';
             setAuthView('login');
             document.getElementById('authScreen').classList.add('active');
             document.getElementById('passInput').value = '';
+            setupGoogleButton();
             showToast('Logged out successfully.');
         }
 
         function navigateTo(pageId) {
             document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-
             document.getElementById('page-' + pageId).classList.add('active');
             document.getElementById('nav-' + pageId).classList.add('active');
             window.scrollTo(0, 0);
+            if (pageId === 'settings') renderAudit(Bimo.session.active());
             refreshMetrics();
         }
 
-        // ORDERS & LEDGER LOGIC WITH SEARCH & FILTERS
-        // Financial model:
-        //   Revenue  = sum of amounts on PAID, non-cancelled orders (money actually collected)
-        //   Due      = sum of amounts on non-cancelled orders not yet marked Paid (money receivable)
-        //   Amounts  are stored as 2-decimal-safe numbers; display uses Intl grouping.
-        const fmtMoney = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-        function money(n) { return fmtMoney.format(Number.isFinite(n) ? n : 0); }
-        function orderAmount(o) {
-            const n = Math.round(parseFloat(o.amount) * 100) / 100;
-            return Number.isFinite(n) && n > 0 ? n : 0;
+        // ---------- SETTINGS ----------
+        function openSettingsTab(tab) {
+            ['profile', 'security', 'ai', 'data'].forEach(t => {
+                document.getElementById('settings-' + t).classList.toggle('active', t === tab);
+                document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+            });
+            if (tab === 'security') renderAudit(Bimo.session.active());
         }
 
+        el('settingLogo').addEventListener('change', async e => {
+            const data = await fileToLogoData(e.target.files[0]);
+            if (data) {
+                const user = Bimo.session.active();
+                user.logo = data;
+                Bimo.accounts.save(user);
+                Bimo.store.set(Bimo.keys.session, user);
+                renderAvatar(user, el('navLogoBox'));
+                renderAvatar(user, el('settingsAvatar'));
+                showToast('Logo updated.');
+                refreshProfilePreview(user);
+            }
+            e.target.value = '';
+        });
+
+        function removeLogo() {
+            const user = Bimo.session.active();
+            user.logo = '';
+            Bimo.accounts.save(user);
+            Bimo.store.set(Bimo.keys.session, user);
+            renderAvatar(user, el('navLogoBox'));
+            renderAvatar(user, el('settingsAvatar'));
+            refreshProfilePreview(user);
+            showToast('Logo removed.');
+        }
+
+        function refreshProfilePreview(user) {
+            el('settingsBrandPreview').textContent = user.brandName || 'Business';
+            el('settingsBrandTypePreview').textContent = user.brandType || '';
+            el('connectBizBanner').style.display = (!user.brandUrl && !user.logo) ? 'block' : 'none';
+        }
+
+        async function saveUserSettings() {
+            const user = Bimo.session.active();
+            if (!user) return;
+            const brandName = el('settingBrandName').value.trim();
+            const brandType = el('settingBrandType').value;
+            const brandUrl = el('settingBrandUrl').value.trim();
+            const phone = el('settingPhone').value.trim();
+            const email = el('settingEmail').value.trim().toLowerCase();
+
+            if (!brandName) { showToast('Business name cannot be empty.', 'error'); return; }
+            if (!Bimo.validate.url(brandUrl)) { showToast('The business link must start with http:// or https://', 'error'); return; }
+            if (phone && !Bimo.validate.phone(phone)) { showToast('The phone number is not valid (digits only, optional +).', 'error'); return; }
+            if (email && !Bimo.validate.email(email)) { showToast('The email address is not valid.', 'error'); return; }
+
+            const oldKey = Bimo.accountKeyOf(user);
+            const users = Bimo.accounts.list();
+            const newKey = email || phone;
+            const emailTaken = email && Object.entries(users).some(([k, u]) => k !== oldKey && (k === email || (u.email && u.email === email)));
+            if (emailTaken) { showToast('Another account already uses that email.', 'error'); return; }
+
+            user.brandName = brandName;
+            user.brandType = brandType;
+            user.brandUrl = brandUrl;
+            user.phone = phone;
+            user.email = email;
+
+            if (newKey !== oldKey) {
+                ['sec', 'audit', 'ledger', 'orders'].forEach(f => {
+                    const data = Bimo.store.get(Bimo.keys[f](oldKey), null);
+                    if (data !== null) {
+                        Bimo.store.remove(Bimo.keys[f](oldKey));
+                        Bimo.store.set(Bimo.keys[f](newKey), data);
+                    }
+                });
+                user.key = newKey;
+            }
+            delete users[oldKey];
+            users[Bimo.accountKeyOf(user)] = user;
+            Bimo.store.set(Bimo.keys.users(), users);
+
+            Bimo.store.set(Bimo.keys.session, user);
+            Bimo.audit.log(Bimo.accountKeyOf(user), 'PROFILE_UPDATED', {});
+            showAppShell(user);
+            showToast('Profile settings updated successfully!');
+        }
+
+        async function changePasswordUI() {
+            const user = Bimo.session.active();
+            if (!user) return;
+            const current = el('currentPass').value;
+            const next = el('newPass').value;
+            const result = await Bimo.auth.changePassword(user, current, next);
+            if (result.error) { showToast(result.error, 'error'); return; }
+            el('currentPass').value = '';
+            el('newPass').value = '';
+            Bimo.store.set(Bimo.keys.session, user);
+            showToast('Password updated successfully.');
+            renderAudit(user);
+        }
+
+        async function runIntegrityCheck() {
+            const user = Bimo.session.active();
+            if (!user) return;
+            const key = Bimo.accountKeyOf(user);
+            const ordersOk = await Bimo.ledger.verify(key, Bimo.store.get(Bimo.keys.orders(key), []));
+            const auditOk = await Bimo.audit.verify(key);
+            const box = el('integrityResult');
+            box.style.display = 'block';
+            if (ordersOk && auditOk) {
+                box.textContent = '✅ All checks passed. Ledger and audit trail are intact.';
+                box.style.color = 'var(--success)';
+            } else {
+                box.textContent = '⚠️ Tampering detected: ' + (!ordersOk ? 'order ledger ' : '') + (!auditOk ? 'audit trail' : '') + ' does not match its cryptographic chain. Data was modified outside the app.';
+                box.style.color = 'var(--danger)';
+            }
+        }
+
+        const AUDIT_LABELS = {
+            ACCOUNT_CREATED: 'Account created',
+            LOGIN_SUCCESS: 'Login',
+            LOGIN_FAILED: 'Failed login attempt',
+            LOGOUT: 'Logout',
+            PASSWORD_CHANGED: 'Password changed',
+            PASSWORD_RESET: 'Password reset via recovery',
+            ORDER_ADDED: 'Order added',
+            ORDER_STATUS: 'Order status changed',
+            PROFILE_UPDATED: 'Profile updated',
+            LEDGER_TAMPER_DETECTED: 'Ledger tampering detected',
+            AI_USED: 'AI assistant used',
+            BACKUP_IMPORTED: 'Backup imported',
+            ACCOUNT_DELETED: 'Account deleted'
+        };
+        function renderAudit(user) {
+            const box = el('auditList');
+            if (!user || !box) return;
+            const list = Bimo.audit.list(Bimo.accountKeyOf(user)).slice(-30).reverse();
+            box.innerHTML = list.length
+                ? list.map(e => `<div class="audit-row"><span>${esc(AUDIT_LABELS[e.event] || e.event)}</span><span>${new Date(e.t).toLocaleString()}</span></div>`).join('')
+                : '<span>No activity recorded yet.</span>';
+        }
+
+        // ---------- AI ----------
+        function onAIProviderChange() {
+            const p = Bimo.ai.presets[el('aiProvider').value];
+            if (p) {
+                if (p.baseUrl) el('aiBaseUrl').value = p.baseUrl;
+                if (p.model) el('aiModel').value = p.model;
+            }
+        }
+        function saveAIConfig() {
+            const cfg = {
+                provider: el('aiProvider').value,
+                baseUrl: el('aiBaseUrl').value.trim(),
+                apiKey: el('aiApiKey').value.trim(),
+                model: el('aiModel').value.trim()
+            };
+            if (cfg.apiKey && (!cfg.baseUrl || !cfg.model)) { showToast('Base URL and model are required with an API key.', 'error'); return; }
+            Bimo.ai.saveConfig(cfg);
+            syncAIStatus();
+            showToast(cfg.apiKey ? 'AI settings saved on this device.' : 'AI settings cleared.');
+        }
+        async function testAIConnection() {
+            const box = el('aiTestResult');
+            box.style.display = 'block';
+            box.textContent = 'Testing…';
+            box.style.color = 'var(--muted)';
+            const res = await Bimo.ai.chat([{ role: 'user', content: 'Reply with exactly: OK' }]);
+            if (res.error) {
+                box.textContent = '⚠️ ' + res.error;
+                box.style.color = 'var(--danger)';
+            } else {
+                box.textContent = '✅ Connected. Model replied: "' + res.text.slice(0, 60) + '"';
+                box.style.color = 'var(--success)';
+            }
+        }
+        function syncAIStatus() {
+            const ok = Bimo.ai.configured();
+            el('aiStatus').textContent = ok ? '· connected' : '· not configured (add your API key in Settings)';
+        }
+        async function askAI() {
+            const user = Bimo.session.active();
+            const question = el('aiQuestion').value.trim();
+            const box = el('aiAnswer');
+            if (!question) { showToast('Type a question first.', 'error'); return; }
+            if (!Bimo.ai.configured()) { showToast('Add your personal AI API key in Settings → AI Integration first.', 'error'); return; }
+
+            const orders = Bimo.store.get(Bimo.keys.orders(Bimo.accountKeyOf(user)), []);
+            let revenue = 0, due = 0, topProducts = {};
+            for (const o of orders) {
+                if (o.status === 'Cancelled') continue;
+                const amt = orderAmount(o);
+                if ((o.paymentStatus || 'Due') === 'Paid') revenue += amt; else due += amt;
+                topProducts[o.product] = (topProducts[o.product] || 0) + 1;
+            }
+            const context = `Business: ${user.brandName || 'unnamed'} (${user.brandType || 'Other'}). Orders: ${orders.length}, revenue collected: ${revenue} BDT, dues: ${due} BDT. Top products: ${Object.entries(topProducts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([p, c]) => p + ' x' + c).join(', ') || 'none'}.`;
+
+            box.style.display = 'block';
+            box.textContent = 'Thinking…';
+            const res = await Bimo.ai.chat([
+                { role: 'system', content: 'You are a concise business assistant for a small Bangladeshi e-commerce seller. Give short, practical advice in the user\'s language. Currency is BDT. Data: ' + context },
+                { role: 'user', content: question.slice(0, 500) }
+            ]);
+            if (res.error) {
+                box.textContent = '⚠️ ' + res.error;
+                box.style.color = 'var(--danger)';
+            } else {
+                box.textContent = res.text;
+                box.style.color = 'var(--text)';
+                Bimo.audit.log(Bimo.accountKeyOf(user), 'AI_USED', {});
+            }
+        }
+
+        // ---------- ORDERS & LEDGER ----------
+        const fmtMoney = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        function money(n) { return fmtMoney.format(Number.isFinite(n) ? n : 0); }
+        function orderAmount(o) { return Bimo.validate.amount(o.amount) || 0; }
+
         function getOrders() {
-            const user = JSON.parse(localStorage.getItem('bimo_active_user') || '{}');
-            try {
-                return JSON.parse(localStorage.getItem('bimo_orders_' + user.gmail) || '[]');
-            } catch(e) { return []; }
+            const user = Bimo.session.active();
+            if (!user) return [];
+            return Bimo.store.get(Bimo.keys.orders(Bimo.accountKeyOf(user)), []);
+        }
+        async function saveOrders(orders) {
+            const user = Bimo.session.active();
+            const key = Bimo.accountKeyOf(user);
+            Bimo.store.set(Bimo.keys.orders(key), orders);
+            await Bimo.ledger.sign(key, orders);
         }
 
         function refreshMetrics() {
             const orders = getOrders();
-            const searchText = (document.getElementById('orderSearchInput')?.value || '').toLowerCase();
-            const statusFilter = document.getElementById('orderStatusFilter')?.value || 'ALL';
-            const paymentFilter = document.getElementById('paymentStatusFilter')?.value || 'ALL';
+            const searchText = (el('orderSearchInput')?.value || '').toLowerCase();
+            const statusFilter = el('orderStatusFilter')?.value || 'ALL';
+            const paymentFilter = el('paymentStatusFilter')?.value || 'ALL';
 
             let revenue = 0, due = 0;
             for (const o of orders) {
-                if (o.status === 'Cancelled') continue;   // cancelled orders remove no money
+                if (o.status === 'Cancelled') continue;
                 const amt = orderAmount(o);
                 if ((o.paymentStatus || 'Due') === 'Paid') revenue += amt;
                 else due += amt;
             }
 
-            const tbody = document.getElementById('orderLifecycleTableBody');
-
+            const tbody = el('orderLifecycleTableBody');
             if (tbody) {
                 tbody.innerHTML = '';
-
                 const filteredOrders = orders.filter(o => {
-                    const matchesSearch = o.customer.toLowerCase().includes(searchText) || o.product.toLowerCase().includes(searchText);
+                    const matchesSearch = String(o.customer).toLowerCase().includes(searchText) || String(o.product).toLowerCase().includes(searchText);
                     const matchesStatus = statusFilter === 'ALL' || o.status === statusFilter;
                     const matchesPayment = paymentFilter === 'ALL' || (o.paymentStatus || 'Due') === paymentFilter;
                     return matchesSearch && matchesStatus && matchesPayment;
@@ -859,7 +1242,6 @@
                     let statusClass = 'status-received';
                     if (o.status === 'Confirmed') statusClass = 'status-confirmed';
                     if (o.status === 'Cancelled') statusClass = 'status-cancelled';
-
                     let paymentClass = (o.paymentStatus || 'Due') === 'Paid' ? 'payment-paid' : 'payment-due';
 
                     tbody.innerHTML += `<tr>
@@ -881,71 +1263,66 @@
                 });
             }
 
-            document.getElementById('homeActiveOrders').textContent = orders.filter(o => o.status !== 'Cancelled').length;
-            document.getElementById('homeRevenue').textContent = money(revenue);
-            document.getElementById('homeDueAmount').textContent = money(due);
+            el('homeActiveOrders').textContent = orders.filter(o => o.status !== 'Cancelled').length;
+            el('homeRevenue').textContent = money(revenue);
+            el('homeDueAmount').textContent = money(due);
         }
 
         function openEntryModal() { document.getElementById('entryModal').classList.add('active'); }
         function closeEntryModal() { document.getElementById('entryModal').classList.remove('active'); }
 
-        function addNewOrder() {
-            const customer = document.getElementById('entryCustomer').value.trim();
-            const product = document.getElementById('entryProduct').value.trim();
-            const amount = parseFloat(document.getElementById('entryAmount').value);
-            const paymentMethod = document.getElementById('entryPaymentMethod').value;
-            const paymentStatus = document.getElementById('entryPaymentStatus').value;
+        async function addNewOrder() {
+            const customer = Bimo.validate.text(el('entryCustomer').value, 80);
+            const product = Bimo.validate.text(el('entryProduct').value, 100);
+            const amount = Bimo.validate.amount(el('entryAmount').value);
+            const paymentMethod = el('entryPaymentMethod').value;
+            const paymentStatus = el('entryPaymentStatus').value;
 
-            if (!customer || !product) {
-                showToast('Please fill all required order fields.', 'error');
-                return;
-            }
-            if (!Number.isFinite(amount) || amount <= 0) {
-                showToast('Sales amount must be a positive number.', 'error');
-                return;
-            }
+            if (!customer || !product) { showToast('Please fill all required order fields.', 'error'); return; }
+            if (amount === null) { showToast('Sales amount must be a positive number.', 'error'); return; }
 
-            const user = JSON.parse(localStorage.getItem('bimo_active_user'));
+            const user = Bimo.session.active();
+            const key = Bimo.accountKeyOf(user);
             const orders = getOrders();
             orders.unshift({
                 id: Date.now(),
-                customer, product,
-                amount: Math.round(amount * 100) / 100,
+                customer, product, amount,
                 paymentMethod, paymentStatus,
-                status: 'Order Received'
+                status: 'Order Received',
+                created: Date.now()
             });
+            await saveOrders(orders);
+            Bimo.audit.log(key, 'ORDER_ADDED', { id: orders[0].id, amount });
 
-            localStorage.setItem('bimo_orders_' + user.gmail, JSON.stringify(orders));
             closeEntryModal();
-            document.getElementById('entryCustomer').value = '';
-            document.getElementById('entryProduct').value = '';
-            document.getElementById('entryAmount').value = '';
+            el('entryCustomer').value = '';
+            el('entryProduct').value = '';
+            el('entryAmount').value = '';
             refreshMetrics();
             showToast('New order recorded successfully!');
         }
 
-        function updateOrderStatus(id, status) {
-            const user = JSON.parse(localStorage.getItem('bimo_active_user'));
-            let orders = getOrders();
-            orders = orders.map(o => o.id === id ? {...o, status} : o);
-            localStorage.setItem('bimo_orders_' + user.gmail, JSON.stringify(orders));
+        async function updateOrderStatus(id, status) {
+            if (!['Confirmed', 'Cancelled', 'Order Received'].includes(status)) return;
+            const user = Bimo.session.active();
+            const key = Bimo.accountKeyOf(user);
+            const orders = getOrders().map(o => o.id === id ? { ...o, status } : o);
+            await saveOrders(orders);
+            Bimo.audit.log(key, 'ORDER_STATUS', { id, status });
             refreshMetrics();
             showToast(`Order status updated to ${status}`);
         }
 
-        // CSV EXPORT FEATURE (RFC 4180 quoting + UTF-8 BOM so Excel opens it cleanly)
+        // CSV EXPORT (RFC 4180 quoting + UTF-8 BOM for Excel)
         function csvField(v) {
             const s = String(v ?? '');
             return '"' + s.replace(/"/g, '""') + '"';
         }
         function exportOrdersCSV() {
             const orders = getOrders();
-            if (orders.length === 0) {
-                showToast('No orders available to export.', 'error');
-                return;
-            }
+            if (orders.length === 0) { showToast('No orders available to export.', 'error'); return; }
 
-            const rows = [["OrderID","Customer","Product","Amount","PaymentMethod","PaymentStatus","Status"]];
+            const rows = [["OrderID", "Customer", "Product", "Amount", "PaymentMethod", "PaymentStatus", "Status"]];
             orders.forEach(o => {
                 rows.push([o.id, o.customer, o.product, orderAmount(o).toFixed(2), o.paymentMethod || 'COD', o.paymentStatus || 'Due', o.status]);
             });
@@ -960,23 +1337,61 @@
             showToast('Orders ledger exported as CSV successfully!');
         }
 
-        function saveUserSettings() {
-            let user = JSON.parse(localStorage.getItem('bimo_active_user'));
-            user.brandName = document.getElementById('settingBrandName').value.trim();
-            user.brandUrl = document.getElementById('settingBrandUrl').value.trim();
-            user.phone = document.getElementById('settingPhone').value.trim();
-
-            let users = JSON.parse(localStorage.getItem('bimo_users_db') || '{}');
-            users[user.gmail] = user;
-            localStorage.setItem('bimo_users_db', JSON.stringify(users));
-            localStorage.setItem('bimo_active_user', JSON.stringify(user));
-
-            showAppShell(user);
-            showToast('Profile settings updated successfully!');
+        // ---------- DATA: BACKUP / DELETE ----------
+        function exportBackup() {
+            const user = Bimo.session.active();
+            if (!user) return;
+            const data = Bimo.backup.exportFor(user);
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'bimo_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+            showToast('Backup downloaded. Keep it somewhere safe.');
         }
 
+        function importBackup(ev) {
+            const file = ev.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const user = Bimo.session.active();
+                if (!user) return;
+                let data;
+                try { data = JSON.parse(reader.result); } catch (e) { showToast('That file is not valid JSON.', 'error'); return; }
+                const result = await Bimo.backup.importFor(user, data);
+                if (result.error) { showToast(result.error, 'error'); return; }
+                await verifyLedgerSilent(user);
+                showAppShell(user);
+                showToast(`Backup restored: ${result.orders} orders.`);
+            };
+            reader.readAsText(file);
+            ev.target.value = '';
+        }
+
+        function deleteAccount() {
+            const user = Bimo.session.active();
+            if (!user) return;
+            const key = Bimo.accountKeyOf(user);
+            if (!confirm('Really delete this account and ALL its data from this device? This cannot be undone.')) return;
+            if (!confirm('Final confirmation: this wipes your profile, orders and audit log. Continue?')) return;
+
+            Bimo.audit.log(key, 'ACCOUNT_DELETED', {});
+            Bimo.accounts.remove(key);
+            Bimo.session.end();
+            document.getElementById('appShell').classList.remove('active');
+            document.getElementById('appShell').style.display = 'none';
+            setAuthView('register');
+            document.getElementById('authScreen').classList.add('active');
+            showToast('Account and data deleted from this device.');
+        }
+
+        // ---------- SECURITY SIM ----------
         function runRedTeamSimulation() {
-            const consoleBox = document.getElementById('simConsoleOutput');
+            const consoleBox = el('simConsoleOutput');
             consoleBox.innerHTML = "[System] Running 1000x tenant firewall simulation...";
             setTimeout(() => {
                 consoleBox.innerHTML += "<br>[Firewall] Zero vulnerabilities detected. Tenant vault secure.";
@@ -984,9 +1399,57 @@
             }, 1500);
         }
 
+        // ---------- PWA INSTALL ----------
+        function syncInstallBtn() {
+            const inApp = document.getElementById('appShell').classList.contains('active');
+            el('installBtn').style.display = (installAvailable && !BimoInstallStandalone() && inApp) ? 'inline-flex' : 'none';
+        }
+        function BimoInstallStandalone() {
+            return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+        }
+        async function promptInstall() {
+            const res = await Bimo.install.prompt();
+            if (!res.ok) {
+                showToast('To install: open your browser menu and choose "Add to Home Screen" / "Install App".');
+            }
+        }
+        Bimo.install.available(avail => { installAvailable = avail; syncInstallBtn(); });
+        window.addEventListener('appinstalled', () => showToast('BIMO installed! Find it on your home screen.'));
+
+        // ---------- BUG REPORT (Netlify Form) ----------
+        function openBugModal() {
+            const user = Bimo.session.active();
+            if (user) document.getElementById('bugEmail').value = user.email || user.phone || '';
+            document.getElementById('bugModal').classList.add('active');
+        }
+        function closeBugModal() { document.getElementById('bugModal').classList.remove('active'); }
+        function submitBugReport(e) {
+            e.preventDefault();
+            const form = e.target;
+            const email = document.getElementById('bugEmail').value.trim();
+            const message = document.getElementById('bugMessage').value.trim();
+            if (!Bimo.validate.email(email)) { showToast('Please enter a valid email address.', 'error'); return false; }
+            if (message.length < 10) { showToast('Please describe the bug in at least 10 characters.', 'error'); return false; }
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(form)).toString()
+            }).then(() => {
+                form.reset();
+                closeBugModal();
+                showToast('Bug report sent. Thank you for helping improve BIMO!');
+            }).catch(() => {
+                showToast('Could not send the report. Check your connection and try again.', 'error');
+            });
+            return false;
+        }
+
+        // ---------- INIT ----------
+        checkSession();
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
         }
+
     </script>
 </body>
 </html>
