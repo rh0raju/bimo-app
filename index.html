@@ -218,6 +218,16 @@
         .audit-row { border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; gap: 10px; }
         .audit-row:last-child { border-bottom: none; }
         .nav-logo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+    
+        /* SIGN-UP STEPS: OTP + ONBOARDING */
+        .step-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--accent); background: rgba(225, 29, 72, 0.12); padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+        .otp-input { text-align: center; letter-spacing: 12px; text-indent: 12px; font-size: 28px; font-weight: 800; padding: 14px 8px; }
+        .otp-meta { font-size: 12px; color: var(--muted); margin: 2px 0 14px; }
+        .otp-demo { background: rgba(245, 158, 11, 0.12); border: 1px dashed var(--warning); color: var(--text); border-radius: 12px; padding: 10px 12px; font-size: 12px; margin-bottom: 14px; text-align: left; line-height: 1.6; }
+        .otp-demo b { font-size: 20px; letter-spacing: 4px; }
+        .btn:disabled { opacity: .5; cursor: not-allowed; }
+        @keyframes otpShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+        .shake { animation: otpShake .35s; }
     </style>
 </head>
 <body id="appBody">
@@ -245,30 +255,11 @@
             <p id="authSubtitle" style="font-size: 12px; color: var(--muted); margin-bottom: 25px;">Set up your business workspace in under a minute.</p>
 
             <div id="registerFields">
-                <label>Email Address <span style="font-size: 10px; color: var(--muted);">(optional if phone given)</span></label>
-                <input type="email" id="regEmail" maxlength="80" placeholder="yourname@gmail.com">
+                <label for="regEmail">Email Address <span style="font-size: 10px; color: var(--muted);">(optional if phone given)</span></label>
+                <input type="email" id="regEmail" maxlength="80" placeholder="yourname@gmail.com" autocomplete="email">
 
-                <label>Mobile Phone Number <span style="font-size: 10px; color: var(--muted);">(optional if email given)</span></label>
-                <input type="tel" id="regPhone" maxlength="16" placeholder="+88017xxxxxxxx">
-
-                <label>Business / Brand Name</label>
-                <input type="text" id="regBrandName" maxlength="60" placeholder="e.g., Dhaka Threads">
-
-                <label>Business Type</label>
-                <select id="regBrandType">
-                    <option value="Facebook Page">Facebook Page</option>
-                    <option value="Instagram">Instagram</option>
-                    <option value="Website / E-commerce">Website / E-commerce</option>
-                    <option value="Daraz">Daraz</option>
-                    <option value="WhatsApp Business">WhatsApp Business</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <label>Page / Website Link <span style="font-size: 10px; color: var(--muted);">(optional)</span></label>
-                <input type="url" id="regBrandUrl" maxlength="200" placeholder="https://facebook.com/yourpage">
-
-                <label>Business Logo <span style="font-size: 10px; color: var(--muted);">(optional, shown as your profile)</span></label>
-                <input type="file" id="regLogo" accept="image/*">
+                <label for="regPhone">Mobile Phone Number <span style="font-size: 10px; color: var(--muted);">(optional if email given)</span></label>
+                <input type="tel" id="regPhone" maxlength="16" placeholder="+88017xxxxxxxx" autocomplete="tel">
             </div>
 
             <div id="loginFields" style="display: none;">
@@ -293,7 +284,15 @@
             </div>
 
             <label id="passLabel">Password <span id="passHint" style="font-size: 10px; color: var(--warning);">(8+ chars, Capital &amp; Lowercase letters)</span></label>
-            <input type="password" id="passInput" maxlength="72" placeholder="e.g., Secure@123">
+            <input type="password" id="passInput" maxlength="72" placeholder="e.g., Secure@123" autocomplete="current-password">
+
+            <div id="confirmWrap" style="display: none;">
+                <label for="confirmPassInput">Confirm Password</label>
+                <input type="password" id="confirmPassInput" maxlength="72" placeholder="Repeat your password" autocomplete="new-password">
+            </div>
+            <label id="showPassWrap" style="display: flex; align-items: center; gap: 8px; margin: -4px 0 12px; font-size: 12px; cursor: pointer;">
+                <input type="checkbox" id="showPasswordCheck" style="width: auto; margin: 0;"> Show password
+            </label>
 
             <button type="button" class="btn" onclick="handleAuthAction()" id="authActionBtn">Create Account</button>
             <div id="googleWrap" style="margin-top: 10px;">
@@ -303,6 +302,64 @@
             <button type="button" class="btn btn-outline" onclick="toggleAuthMode()" id="switchModeBtn" style="margin-top: 10px;">Already have an account? Login</button>
             <button type="button" class="auth-link" onclick="showRecovery()" id="forgotBtn" style="display: none;">Forgot password?</button>
             <button type="button" class="btn btn-outline" onclick="backToLogin()" id="backToLoginBtn" style="margin-top: 10px; display: none;">Back to Login</button>
+        </div>
+    </div>
+
+    <!-- SIGN-UP STEP 2: OTP -->
+    <div id="otpScreen" class="screen">
+        <div class="auth-card">
+            <div class="bimo-logo-container" style="width: 70px; height: 70px; margin: 0 auto 10px auto;">
+                <div class="bimo-logo-bg" style="border-radius: 18px;"></div>
+                <div class="bimo-logo-text" style="font-size: 24px;">B</div>
+            </div>
+            <span class="step-pill">Step 2 of 3</span>
+            <h2 id="otpTitle" style="font-size: 20px; font-weight: 700; margin-bottom: 5px;">Verify your phone</h2>
+            <p id="otpSubtitle" style="font-size: 12px; color: var(--muted); margin-bottom: 18px;"><span id="otpSubLead"></span><b id="otpTarget" style="color: var(--text);"></b></p>
+
+            <div id="otpDemoBox" class="otp-demo" style="display: none;">
+                <strong>DEMO MODE:</strong> no SMS or email is sent, so this is not real verification.<br>
+                Your code: <b id="otpDemoCode"></b>
+                <button type="button" class="auth-link" onclick="fillDemoCode()">Fill it for me</button>
+            </div>
+
+            <input type="text" id="otpInput" class="otp-input" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="••••••" aria-label="6-digit verification code">
+            <p class="otp-meta">Expires in <b id="otpExpiry">5:00</b> · <span id="otpAttempts">5 attempts left</span></p>
+
+            <button type="button" class="btn" id="otpVerifyBtn" onclick="verifyOtp()">Verify</button>
+            <button type="button" class="btn btn-outline" id="otpResendBtn" onclick="resendOtp()" style="margin-top: 10px;">Resend code</button>
+            <button type="button" class="auth-link" id="otpSwitchBtn" onclick="switchOtpTarget()" style="display: none;"></button>
+            <button type="button" class="auth-link" onclick="cancelSignup()">← Change my details</button>
+        </div>
+    </div>
+
+    <!-- SIGN-UP STEP 3: ONBOARDING -->
+    <div id="onboardScreen" class="screen">
+        <div class="auth-card">
+            <span class="step-pill">Step 3 of 3</span>
+            <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 5px;">Set up your shop</h2>
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 20px;">Verified! Tell us about your business to finish.</p>
+
+            <label for="obName">Business / Brand Name</label>
+            <input type="text" id="obName" maxlength="60" placeholder="e.g., Dhaka Threads" autocomplete="organization">
+
+            <label for="obType">Business Type</label>
+            <select id="obType">
+                <option value="Facebook Page">Facebook Page</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Website / E-commerce">Website / E-commerce</option>
+                <option value="Daraz">Daraz</option>
+                <option value="WhatsApp Business">WhatsApp Business</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="obUrl">Page / Website Link <span style="font-size: 10px; color: var(--muted);">(optional)</span></label>
+            <input type="url" id="obUrl" maxlength="200" placeholder="https://facebook.com/yourpage">
+
+            <label for="obLogo">Business Logo <span style="font-size: 10px; color: var(--muted);">(optional)</span></label>
+            <input type="file" id="obLogo" accept="image/*">
+
+            <button type="button" class="btn" id="obFinishBtn" onclick="finishOnboarding()">Finish &amp; Open Workspace</button>
+            <button type="button" class="auth-link" onclick="cancelSignup()">← Start over</button>
         </div>
     </div>
 
@@ -571,35 +628,68 @@
         </div>
     </div>
 
-    <!-- MODAL: BUG REPORT -->
-    <div id="bugModal" class="modal">
-        <div class="auth-card" style="width: 100%; max-width: 450px;">
-            <h2 style="margin-bottom: 5px;">Report a Bug</h2>
-            <p style="font-size: 12px; color: var(--muted); margin-bottom: 20px;">Tell us what went wrong and we will fix it in an upcoming update.</p>
-            <form name="bug-report" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="return submitBugReport(event)">
-                <input type="hidden" name="form-name" value="bug-report">
-                <p style="display: none;"><label>Don't fill this out: <input name="bot-field"></label></p>
-                <label>Your Email</label>
-                <input type="email" id="bugEmail" name="email" placeholder="yourname@gmail.com">
-                <label>Where did it happen?</label>
-                <select id="bugArea" name="area">
-                    <option value="Dashboard">Dashboard</option>
-                    <option value="Orders">Orders</option>
-                    <option value="Login / Account">Login / Account</option>
-                    <option value="Settings">Settings</option>
-                    <option value="Other">Other</option>
-                </select>
-                <label>What happened?</label>
-                <textarea id="bugMessage" name="message" rows="4" placeholder="Describe the bug, what you expected, and what happened instead..." style="width: 100%; padding: 12px 15px; margin-bottom: 15px; background: rgba(100,100,100,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button type="submit" class="btn">Send Report</button>
-                    <button type="button" class="btn btn-outline" onclick="closeBugModal()">Cancel</button>
-                </div>
-            </form>
-        </div>
+<!-- MODAL: BUG REPORT -->
+<div id="bugModal" class="modal">
+  <div class="class=auth-card" style="width: 100%; max-width: 450px;">
+    <h2 style="margin-bottom: 5px;">Report a Bug</h2>
+    <p style="font-size: 12px; color: var(--muted); margin-bottom: 20px;">Tell us what went wrong</p>
+    
+    <!-- CHANGED: Removed the <form> wrapper action to completely prevent page refresh -->
+    <div class="bug-form-container">
+      <label>Your Email</label>
+      <input type="email" id="bugEmail" placeholder="yourname@example.com">
+      
+      <label>Where did it happen?</label>
+      <select id="bugArea">
+        <option value="Dashboard">Dashboard</option>
+        <option value="Orders">Orders</option>
+        <option value="Login / Account">Login / Account</option>
+        <option value="Settings">Settings</option>
+        <option value="Other">Other</option>
+      </select>
+      
+      <label>What happened?</label>
+      <!-- FIXED ID: Changed id to 'bugtxt' to perfectly match your script function -->
+      <textarea id="bugtxt" rows="4" placeholder="Describe the issue..."></textarea>
+      
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <!-- FIXED BUTTONS: Converted to type="button" and updated onclick handlers to pass event context -->
+        <button type="button" class="btn" onclick="bugSend(event)">Send Report</button>
+        <button type="button" class="btn btn-outline" onclick="bugClose(event)">Cancel</button>
+      </div>
     </div>
+  </div>
+</div>
+    
+    <!-- CHANGED: Removed the <form> wrapper action to completely prevent page refresh -->
+    <div class="bug-form-container">
+      <label>Your Email</label>
+      <input type="email" id="bugEmail" placeholder="yourname@example.com">
+      
+      <label>Where did it happen?</label>
+      <select id="bugArea">
+        <option value="Dashboard">Dashboard</option>
+        <option value="Orders">Orders</option>
+        <option value="Login / Account">Login / Account</option>
+        <option value="Settings">Settings</option>
+        <option value="Other">Other</option>
+      </select>
+      
+      <label>What happened?</label>
+      <!-- FIXED ID: Changed id to 'bugtxt' to perfectly match your script function -->
+      <textarea id="bugtxt" rows="4" placeholder="Describe the issue..."></textarea>
+      
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <!-- FIXED BUTTONS: Converted to type="button" and updated onclick handlers to pass event context -->
+        <button type="button" class="btn" onclick="bugSend(event)">Send Report</button>
+        <button type="button" class="btn btn-outline" onclick="bugClose(event)">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <script src="bimo-core.js"></script>
+    <script src="bimo-otp.js"></script>
     <script>
         const ua = navigator.userAgent || navigator.vendor || window.opera;
         const bodyEl = document.getElementById('appBody');
@@ -653,7 +743,7 @@
         let installAvailable = false;
 
         const AUTH_COPY = {
-            register: { title: 'Create your account', sub: 'Sign up with email or phone and set up your business profile.', btn: 'Sign Up' },
+            register: { title: 'Create your account', sub: 'Step 1 of 3 · Enter your email or phone and choose a password.', btn: 'Continue' },
             login:    { title: 'Welcome back', sub: 'Sign in with your email or phone and password.', btn: 'Login' },
             recover:  { title: 'Account recovery', sub: 'Enter your registered email or phone, plus one other saved detail.', btn: 'Verify Details' },
             reset:    { title: 'Set a new password', sub: 'Choose a new password for your account.', btn: 'Update Password' }
@@ -672,6 +762,9 @@
             el('passInput').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('passHint').style.display = isReg ? 'inline' : 'none';
             el('googleWrap').style.display = (isReg || isLogin) ? 'block' : 'none';
+            el('confirmWrap').style.display = isReg ? 'block' : 'none';
+            el('showPassWrap').style.display = (isReg || isLogin) ? 'flex' : 'none';
+            el('passInput').autocomplete = isReg ? 'new-password' : 'current-password';
             el('forgotBtn').style.display = isLogin ? 'block' : 'none';
             el('switchModeBtn').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('backToLoginBtn').style.display = (isRec || isReset) ? 'block' : 'none';
@@ -682,9 +775,35 @@
             el('authActionBtn').textContent = copy.btn;
         }
 
+        function setPasswordVisibility(show) {
+            ['passInput', 'confirmPassInput'].forEach(id => { const f = el(id); if (f) f.type = show ? 'text' : 'password'; });
+        }
+        function setupPasswordToggles() {
+            const chk = el('showPasswordCheck');
+            if (chk) chk.addEventListener('change', () => setPasswordVisibility(chk.checked));
+            // Enter submits whichever form is showing
+            el('authScreen').addEventListener('keydown', e => {
+                const t = e.target;
+                if (e.key === 'Enter' && t.tagName === 'INPUT' && t.type !== 'file' && t.type !== 'checkbox') {
+                    e.preventDefault();
+                    handleAuthAction();
+                }
+            });
+        }
+
+        // Switch between "Create Account" and "Login"
         function toggleAuthMode() {
-            setAuthView(authMode === 'register' ? 'login' : 'register');
-            el('passInput').value = '';
+            const next = authMode === 'register' ? 'login' : 'register';
+            setAuthView(next);
+            // never carry a typed password (or its visible state) over to the other form
+            ['passInput', 'confirmPassInput'].forEach(id => { const f = el(id); if (f) f.value = ''; });
+            const chk = el('showPasswordCheck');
+            if (chk) chk.checked = false;
+            setPasswordVisibility(false);
+            const card = document.querySelector('#authScreen .auth-card');
+            if (card) card.scrollTop = 0;
+            const first = el(next === 'login' ? 'loginId' : 'regEmail');
+            if (first && !('ontouchstart' in window)) first.focus({ preventScroll: true });   // skip on phones: avoids a surprise keyboard
         }
         function showRecovery() { recoveryKey = null; setAuthView('recover'); }
         function backToLogin() {
@@ -725,33 +844,165 @@
                 reader.readAsDataURL(file);
             });
         }
-        el('regLogo').addEventListener('change', async e => {
+        el('obLogo').addEventListener('change', async e => {
             regLogoData = await fileToLogoData(e.target.files[0]);
             if (regLogoData) showToast('Logo ready. Save your profile to apply it.');
         });
 
+        // ---------- SIGN-UP: step 1 (details) -> step 2 (OTP) -> step 3 (shop) -> account ----------
+        // Nothing is saved until step 3 succeeds, so a half-finished sign-up never leaves an account behind.
+        // The password is kept in memory only (never written to storage) and cleared when the flow ends.
+        let pendingSignup = null, otpBusy = false, finishing = false, otpTick = null;
+
+        function showScreen(id) {
+            ['authScreen', 'otpScreen', 'onboardScreen'].forEach(s => el(s).classList.toggle('active', s === id));
+            if (id === 'otpScreen') startOtpTick(); else stopOtpTick();
+            window.scrollTo(0, 0);
+        }
+
         async function handleRegister() {
+            if (typeof BimoOtp === 'undefined') { showToast('OTP module missing: bimo-otp.js must sit next to index.html.', 'error'); return; }
             const email = el('regEmail').value.trim().toLowerCase();
             const phone = el('regPhone').value.trim();
-            const brandName = el('regBrandName').value.trim();
-            const brandType = el('regBrandType').value;
-            const brandUrl = el('regBrandUrl').value.trim();
             const pass = el('passInput').value;
 
-            if (!brandName) { showToast('Business / brand name is required.', 'error'); return; }
-            if (!email && !phone) { showToast('Enter an email or a phone number — at least one is required.', 'error'); return; }
+            if (!email && !phone) { showToast('Enter an email or a phone number. At least one is required.', 'error'); return; }
             if (email && !Bimo.validate.email(email)) { showToast('The email address is not valid.', 'error'); return; }
             if (phone && !Bimo.validate.phone(phone)) { showToast('The phone number is not valid (digits only, optional +).', 'error'); return; }
-            if (!Bimo.validate.url(brandUrl)) { showToast('The business link must start with http:// or https://', 'error'); return; }
             const err = Bimo.validate.password(pass);
             if (err) { showToast(err, 'error'); return; }
+            if (pass !== el('confirmPassInput').value) { showToast('Passwords do not match.', 'error'); return; }
+            if ((email && Bimo.accounts.find(email)) || (phone && Bimo.accounts.find(phone))) {
+                showToast('An account with these details already exists. Please log in.', 'error'); return;
+            }
 
-            const { user, error } = await Bimo.accounts.create({ email, phone, brandName, brandType, brandUrl, logo: regLogoData, pass });
-            if (error) { showToast(error, 'error'); return; }
+            const targets = [];
+            if (phone) targets.push({ type: 'phone', value: phone });
+            if (email) targets.push({ type: 'email', value: email });
+            pendingSignup = { email, phone, pass, targets, t: 0 };
+            BimoOtp.reset();
+            showScreen('otpScreen');
+            await sendOtpTo(targets[0]);
+        }
 
-            el('passInput').value = '';
-            showAppShell(Bimo.session.start(user));
-            showToast('Account created. Welcome to BIMO!');
+        async function sendOtpTo(target) {
+            el('otpResendBtn').disabled = true;
+            const r = await BimoOtp.send(target);
+            renderOtp();
+            if (!r.ok) { showToast(r.error, 'error'); return; }
+            const box = el('otpDemoBox');
+            if (r.demoCode) { el('otpDemoCode').textContent = r.demoCode; box.style.display = 'block'; }
+            else { el('otpDemoCode').textContent = ''; box.style.display = 'none'; }
+            showToast(r.demoCode ? 'Demo code generated. It is shown on screen.' : 'Code sent to ' + BimoOtp.mask(target) + '.');
+            el('otpInput').value = '';
+            el('otpInput').focus();
+        }
+
+        function currentTarget() { return pendingSignup && pendingSignup.targets[pendingSignup.t]; }
+
+        function resendOtp() { const t = currentTarget(); if (t) sendOtpTo(t); }
+
+        function switchOtpTarget() {
+            if (!pendingSignup || pendingSignup.targets.length < 2) return;
+            const s = BimoOtp.status();
+            if (s.resendIn > 0) { showToast('Please wait ' + s.resendIn + 's before requesting another code.', 'error'); return; }
+            pendingSignup.t = 1 - pendingSignup.t;
+            sendOtpTo(currentTarget());
+        }
+
+        function fillDemoCode() {
+            el('otpInput').value = el('otpDemoCode').textContent;
+            verifyOtp();
+        }
+
+        async function verifyOtp() {
+            if (otpBusy || !pendingSignup) return;
+            const code = el('otpInput').value.replace(/\D/g, '');
+            if (code.length !== 6) { showToast('Enter the 6-digit code.', 'error'); return; }
+            otpBusy = true;
+            el('otpVerifyBtn').disabled = true;
+            const r = await BimoOtp.verify(code);
+            otpBusy = false;
+            if (!r.ok) {
+                const input = el('otpInput');
+                input.value = '';
+                input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+                renderOtp();
+                showToast(r.error, 'error');
+                return;
+            }
+            showToast('Verified! One last step.');
+            showScreen('onboardScreen');
+            if (!('ontouchstart' in window)) el('obName').focus({ preventScroll: true });
+        }
+
+        function fmtTime(sec) { return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
+
+        function renderOtp() {
+            const tg = currentTarget();
+            if (!tg) return;
+            const s = BimoOtp.status();
+            el('otpTitle').textContent = tg.type === 'phone' ? 'Verify your phone' : 'Verify your email';
+            el('otpSubLead').textContent = BimoOtp.config.mode === 'demo' ? 'Demo mode: a 6-digit code was generated for ' : 'We sent a 6-digit code to ';
+            el('otpTarget').textContent = BimoOtp.mask(tg);
+            el('otpExpiry').textContent = s.expiresIn > 0 ? fmtTime(s.expiresIn) : 'expired';
+            el('otpAttempts').textContent = s.locked ? 'locked: request a new code' : s.attemptsLeft + (s.attemptsLeft === 1 ? ' attempt left' : ' attempts left');
+            el('otpVerifyBtn').disabled = otpBusy || !s.active || s.expiresIn <= 0 || s.locked;
+            const rb = el('otpResendBtn');
+            rb.disabled = s.resendIn > 0 || s.sendsLeft <= 0;
+            rb.textContent = s.resendIn > 0 ? 'Resend code (' + s.resendIn + 's)' : 'Resend code';
+            const sw = el('otpSwitchBtn');
+            if (pendingSignup.targets.length > 1) {
+                sw.style.display = '';
+                sw.textContent = 'Send the code to my ' + pendingSignup.targets[1 - pendingSignup.t].type + ' instead';
+            } else { sw.style.display = 'none'; }
+        }
+        function startOtpTick() { stopOtpTick(); renderOtp(); otpTick = setInterval(renderOtp, 1000); }
+        function stopOtpTick() { if (otpTick) { clearInterval(otpTick); otpTick = null; } }
+
+        function cancelSignup() {
+            stopOtpTick();
+            if (typeof BimoOtp !== 'undefined') BimoOtp.reset();
+            pendingSignup = null; otpBusy = false;
+            el('otpInput').value = ''; el('otpDemoCode').textContent = ''; el('otpDemoBox').style.display = 'none';
+            ['passInput', 'confirmPassInput'].forEach(id => { el(id).value = ''; });
+            showScreen('authScreen');
+            setAuthView('register');
+        }
+
+        async function finishOnboarding() {
+            if (finishing) return;
+            const target = currentTarget();
+            if (!pendingSignup || !target) { showToast('Your sign-up session ended. Please start again.', 'error'); cancelSignup(); return; }
+            if (!BimoOtp.isVerifiedFor(target)) { showToast('Please verify your code first.', 'error'); showScreen('otpScreen'); return; }
+
+            const brandName = el('obName').value.trim();
+            const brandType = el('obType').value;
+            const brandUrl = el('obUrl').value.trim();
+            if (!brandName) { showToast('Business / brand name is required.', 'error'); return; }
+            if (!Bimo.validate.url(brandUrl)) { showToast('The business link must start with http:// or https://', 'error'); return; }
+
+            finishing = true; el('obFinishBtn').disabled = true;
+            try {
+                const { email, phone, pass } = pendingSignup;
+                const { user, error } = await Bimo.accounts.create({ email, phone, brandName, brandType, brandUrl, logo: regLogoData, pass, verifiedVia: target.type, otpMode: BimoOtp.config.mode });
+                if (error) { showToast(error, 'error'); return; }
+                try { Bimo.audit.log(Bimo.accountKeyOf(user), 'SIGNUP_VERIFIED', { via: target.type, mode: BimoOtp.config.mode }); } catch (e) {}
+                stopOtpTick(); BimoOtp.reset(); pendingSignup = null; regLogoData = '';
+                ['passInput', 'confirmPassInput', 'obName', 'obUrl'].forEach(id => { el(id).value = ''; });
+                showScreen(null);
+                showAppShell(Bimo.session.start(user));
+                showToast('Account created. Welcome to BIMO!');
+            } finally { finishing = false; el('obFinishBtn').disabled = false; }
+        }
+
+        function setupOtpFlow() {
+            el('otpInput').addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 6);
+                if (this.value.length === 6) { this.blur(); verifyOtp(); }
+            });
+            el('otpScreen').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'otpInput') { e.preventDefault(); verifyOtp(); } });
+            el('onboardScreen').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.tagName === 'INPUT') && e.target.type !== 'file') { e.preventDefault(); finishOnboarding(); } });
         }
 
         async function handleLogin() {
@@ -886,7 +1137,12 @@
         }
 
         function checkSession() {
-            const user = Bimo.session.active();
+            let user = Bimo.session.active();
+            if (user && user.expiresAt && Date.now() > user.expiresAt) {
+                showToast('Your session has expired. Please sign in again.', 'error');
+                if (Bimo.session.end) Bimo.session.end(); else localStorage.removeItem('bimo_session');
+                user = null;
+            }
             if (user) {
                 showAppShell(user);
             } else {
@@ -1415,41 +1671,94 @@
         }
         Bimo.install.available(avail => { installAvailable = avail; syncInstallBtn(); });
         window.addEventListener('appinstalled', () => showToast('BIMO installed! Find it on your home screen.'));
-
         // ---------- BUG REPORT (Netlify Form) ----------
         function openBugModal() {
             const user = Bimo.session.active();
             if (user) document.getElementById('bugEmail').value = user.email || user.phone || '';
             document.getElementById('bugModal').classList.add('active');
         }
-        function closeBugModal() { document.getElementById('bugModal').classList.remove('active'); }
+        function closeBugModal(e) { 
+            if (e && e.preventDefault) e.preventDefault();
+            document.getElementById('bugModal').classList.remove('active'); 
+        }
         function submitBugReport(e) {
-            e.preventDefault();
-            const form = e.target;
+            if (e && e.preventDefault) e.preventDefault();
+            const form = e.target || document.querySelector('form[name="bug-report"]');
             const email = document.getElementById('bugEmail').value.trim();
             const message = document.getElementById('bugMessage').value.trim();
-            if (!Bimo.validate.email(email)) { showToast('Please enter a valid email address.', 'error'); return false; }
-            if (message.length < 10) { showToast('Please describe the bug in at least 10 characters.', 'error'); return false; }
+            
+            if (!Bimo.validate.email(email)) { 
+                showToast('Please enter a valid email address.', 'er'); 
+                return false; 
+            }
+            if (message.length < 10) { 
+                showToast('Please describe the bug in at least 10 characters.', 'er'); 
+                return false; 
+            }
+            
             fetch('/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(new FormData(form)).toString()
             }).then(() => {
                 form.reset();
-                closeBugModal();
+                document.getElementById('bugModal').classList.remove('active');
                 showToast('Bug report sent. Thank you for helping improve BIMO!');
             }).catch(() => {
-                showToast('Could not send the report. Check your connection and try again.', 'error');
+                showToast('Could not send the report. Check your connection and try again.', 'er');
             });
             return false;
         }
-
-        // ---------- INIT ----------
-        checkSession();
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+        
+           // --- USER-FRIENDLY INTERACTIVE UI COUNTER ---
+           function updateCharCount(textarea) {
+            const counter = document.getElementById('charCounter');
+            if (!counter) return;
+            const len = textarea.value.trim().length;
+            if (len < 10) {
+                counter.textContent = `${len} / 10 chars min`;
+                counter.style.color = 'var(--nt)'; 
+            } else {
+                counter.textContent = `${len} characters`;
+                counter.style.color = 'var(--gt)'; 
+            }
         }
 
+        // ---------- BIMO GLOBAL HELPERS ----------
+        if (typeof Bimo === 'undefined') {
+            window.Bimo = {};
+        }
+        
+        Bimo.session = Bimo.session || {
+            active: function() {
+                try {
+                    const data = localStorage.getItem('bimo_session');
+                    return (data && data.trim()) ? JSON.parse(data) : null;
+                } catch(e) {
+                    return null;
+                }
+            }
+        };
+
+        // Fallback validation rules if bimo-core.js didn't expose them yet
+        Bimo.validate = Bimo.validate || {};
+        if (!Bimo.validate.email) {
+            Bimo.validate.email = function(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            };
+        }
+
+        // ---------- INIT ----------
+        setupPasswordToggles();
+        setupOtpFlow();
+        checkSession();
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch((err) => {
+                    console.log("Service Worker registration bypassed or deferred.");
+                });
+            });
+        }
     </script>
 </body>
 </html>
