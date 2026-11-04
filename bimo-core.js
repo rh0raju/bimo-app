@@ -1,81 +1,59 @@
-const crypto = require('crypto');
+/* BIMO Core — reusable client-side platform layer.
+   Drop this file into any project and use the global `Bimo` object.
+   Provides: secure storage, password hashing, account management
+   (email/phone login), brute-force lockout, sessions with expiry,
+   tamper-evident hash-chained audit trail and order ledger,
+   PWA install handling, bring-your-own-key AI client, and backup. */
+(function (global) {
+  'use strict';
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'asdfghjklqzxcvbnmqwertyuiopasdfg'; 
-const IV_LENGTH = 16; 
+  const Bimo = {};
 
-function encrypt(text) {
-  try {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
-    
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    
-    const authTag = cipher.getAuthTag().toString('hex');
-    
-    return iv.toString('hex') + ':' + authTag + ':' + encrypted;
-  } catch (error) {
-    return null;
-  }
-}
-
-function decrypt(text) {
-  try {
-    const textParts = text.split(':');
-    const iv = Buffer.from(textParts.shift(), 'hex');
-    const authTag = Buffer.from(textParts.shift(), 'hex');
-    const encryptedText = textParts.join(':');
-    
-    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
-    decipher.setAuthTag(authTag);
-    
-    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    
-    return decrypted;
-  } catch (error) {
-    return null;
-  }
-}
-
-// Exported object block inside your bimo-core.js
-module.exports = {
-  set(key, value) {
-    try {
-      const stringValue = JSON.stringify(value);
-      const encryptedValue = encrypt(stringValue);
-      
-      if (encryptedValue) {
-        global.localStorage.setItem(key, encryptedValue);
-        return true;
-      }
-      return false;
-    } catch (e) {
-      return false;
+  /* ---------- storage (fail-safe wrappers) ---------- */
+  Bimo.store = {
+    get(key, fallback) {
+      try {
+        const raw = global.localStorage.getItem(key);
+        return raw === null ? fallback : JSON.parse(raw);
+      } catch (e) { return fallback; }
+    },
+    set(key, value) {
+      try { global.localStorage.setItem(key, JSON.stringify(value)); return true; }
+      catch (e) { return false; }
+    },
+    remove(key) {
+      try { global.localStorage.removeItem(key); } catch (e) {}
     }
-  },
+  };
 
-  get(key) {
-    try {
-      const encryptedData = global.localStorage.getItem(key);
-      if (!encryptedData) return null;
-      
-      const decryptedData = decrypt(encryptedData);
-      return decryptedData ? JSON.parse(decryptedData) : null;
-    } catch (e) {
-      return null;
-    }
-  },
-
-  remove(key) {
-    try {
-      global.localStorage.removeItem(key);
-      return true;
-    } catch (e) {
-      return false;
-    }
+  /* ---------- crypto helpers ---------- */
+  function bytesToHex(buf) {
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
-};
+  Bimo.randomHex = function (bytes = 16) {
+    const a = new Uint8Array(bytes);
+    (global.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.fill(0);
+    return bytesToHex(a);
+  };
+  Bimo.sha256 = async function (text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(text)));
+    return bytesToHex(buf);
+  };
+
+  /* Passwords: salted SHA-256 (salt:hash). Legacy plaintext is upgraded on first
+     successful login. Client-side hashing protects at-rest data but cannot replace
+     a server; see results notes. */
+  Bimo.makePassRecord = async function (pass) {
+    const salt = Bimo.randomHex(16);
+    return salt + ':' + (await Bimo.sha256(salt + ':' + pass));
+  };
+  Bimo.verifyPassRecord = async function (pass, user) {
+    if (user.passHash) {
+      const [salt, h] = String(user.passHash).split(':');
+      return salt && h && (await Bimo.sha256(salt + ':' + pass)) === h;
+    }
+    return user.pass !== undefined && user.pass === pass;
+  };
 
   /* ---------- validation ---------- */
   const RX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
