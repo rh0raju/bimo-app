@@ -318,14 +318,29 @@
     openrouter: { label: 'OpenRouter', baseUrl: 'https://openrouter.ai/api/v1', model: 'openai/gpt-4o-mini' },
     custom: { label: 'Custom (OpenAI-compatible)', baseUrl: '', model: '' }
   };
+  let aiApiKeyRuntime = '';
+  function getSessionApiKey() {
+    return '';
+  }
+  function setSessionApiKey(v) {
+    try {
+      if (!v) global.sessionStorage.removeItem('bimo.ai.apiKey');
+    } catch (e) {}
+  }
   Bimo.ai = {
     presets: AI_PRESETS,
-    getConfig() { return Bimo.store.get(K.ai, { provider: '', baseUrl: '', apiKey: '', model: '' }); },
+    getConfig() {
+      const persisted = Bimo.store.get(K.ai, { provider: '', baseUrl: '', model: '' });
+      const apiKey = aiApiKeyRuntime || getSessionApiKey();
+      return { provider: persisted.provider || '', baseUrl: persisted.baseUrl || '', apiKey, model: persisted.model || '' };
+    },
     saveConfig(cfg) {
+      const apiKey = String(cfg.apiKey || '').trim();
+      aiApiKeyRuntime = apiKey;
+      setSessionApiKey(apiKey);
       Bimo.store.set(K.ai, {
         provider: Bimo.validate.text(cfg.provider, 20),
         baseUrl: Bimo.validate.url(cfg.baseUrl) ? String(cfg.baseUrl).trim() : '',
-        apiKey: String(cfg.apiKey || '').trim(),
         model: Bimo.validate.text(cfg.model, 60)
       });
     },
