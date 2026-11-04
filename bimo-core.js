@@ -320,12 +320,11 @@
   };
   let aiApiKeyRuntime = '';
   function getSessionApiKey() {
-    try { return global.sessionStorage.getItem('bimo.ai.apiKey') || ''; } catch (e) { return ''; }
+    return '';
   }
   function setSessionApiKey(v) {
     try {
-      if (v) global.sessionStorage.setItem('bimo.ai.apiKey', v);
-      else global.sessionStorage.removeItem('bimo.ai.apiKey');
+      if (!v) global.sessionStorage.removeItem('bimo.ai.apiKey');
     } catch (e) {}
   }
   Bimo.ai = {
