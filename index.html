@@ -218,6 +218,7 @@
         .audit-row { border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; gap: 10px; }
         .audit-row:last-child { border-bottom: none; }
         .nav-logo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+<<<<<<< HEAD
     
         /* SIGN-UP STEPS: OTP + ONBOARDING */
         .step-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--accent); background: rgba(225, 29, 72, 0.12); padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
@@ -228,6 +229,8 @@
         .btn:disabled { opacity: .5; cursor: not-allowed; }
         @keyframes otpShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
         .shake { animation: otpShake .35s; }
+=======
+>>>>>>> feature/financial-reporting
     </style>
 </head>
 <body id="appBody">
@@ -255,11 +258,38 @@
             <p id="authSubtitle" style="font-size: 12px; color: var(--muted); margin-bottom: 25px;">Set up your business workspace in under a minute.</p>
 
             <div id="registerFields">
+<<<<<<< HEAD
                 <label for="regEmail">Email Address <span style="font-size: 10px; color: var(--muted);">(optional if phone given)</span></label>
                 <input type="email" id="regEmail" maxlength="80" placeholder="yourname@gmail.com" autocomplete="email">
 
                 <label for="regPhone">Mobile Phone Number <span style="font-size: 10px; color: var(--muted);">(optional if email given)</span></label>
                 <input type="tel" id="regPhone" maxlength="16" placeholder="+88017xxxxxxxx" autocomplete="tel">
+=======
+                <label>Email Address <span style="font-size: 10px; color: var(--muted);">(optional if phone given)</span></label>
+                <input type="email" id="regEmail" maxlength="80" placeholder="yourname@gmail.com">
+
+                <label>Mobile Phone Number <span style="font-size: 10px; color: var(--muted);">(optional if email given)</span></label>
+                <input type="tel" id="regPhone" maxlength="16" placeholder="+88017xxxxxxxx">
+
+                <label>Business / Brand Name</label>
+                <input type="text" id="regBrandName" maxlength="60" placeholder="e.g., Dhaka Threads">
+
+                <label>Business Type</label>
+                <select id="regBrandType">
+                    <option value="Facebook Page">Facebook Page</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="Website / E-commerce">Website / E-commerce</option>
+                    <option value="Daraz">Daraz</option>
+                    <option value="WhatsApp Business">WhatsApp Business</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label>Page / Website Link <span style="font-size: 10px; color: var(--muted);">(optional)</span></label>
+                <input type="url" id="regBrandUrl" maxlength="200" placeholder="https://facebook.com/yourpage">
+
+                <label>Business Logo <span style="font-size: 10px; color: var(--muted);">(optional, shown as your profile)</span></label>
+                <input type="file" id="regLogo" accept="image/*">
+>>>>>>> feature/financial-reporting
             </div>
 
             <div id="loginFields" style="display: none;">
@@ -284,6 +314,7 @@
             </div>
 
             <label id="passLabel">Password <span id="passHint" style="font-size: 10px; color: var(--warning);">(8+ chars, Capital &amp; Lowercase letters)</span></label>
+<<<<<<< HEAD
             <input type="password" id="passInput" maxlength="72" placeholder="e.g., Secure@123" autocomplete="current-password">
 
             <div id="confirmWrap" style="display: none;">
@@ -293,6 +324,9 @@
             <label id="showPassWrap" style="display: flex; align-items: center; gap: 8px; margin: -4px 0 12px; font-size: 12px; cursor: pointer;">
                 <input type="checkbox" id="showPasswordCheck" style="width: auto; margin: 0;"> Show password
             </label>
+=======
+            <input type="password" id="passInput" maxlength="72" placeholder="e.g., Secure@123">
+>>>>>>> feature/financial-reporting
 
             <button type="button" class="btn" onclick="handleAuthAction()" id="authActionBtn">Create Account</button>
             <div id="googleWrap" style="margin-top: 10px;">
@@ -305,6 +339,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- SIGN-UP STEP 2: OTP -->
     <div id="otpScreen" class="screen">
         <div class="auth-card">
@@ -363,6 +398,8 @@
         </div>
     </div>
 
+=======
+>>>>>>> feature/financial-reporting
     <!-- MAIN APP SHELL -->
     <div id="appShell" class="app-shell">
         <nav class="navbar">
@@ -628,6 +665,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
 <!-- MODAL: BUG REPORT -->
 <div id="bugModal" class="modal">
   <div class="class=auth-card" style="width: 100%; max-width: 450px;">
@@ -690,6 +728,37 @@
 
     <script src="bimo-core.js"></script>
     <script src="bimo-otp.js"></script>
+=======
+    <!-- MODAL: BUG REPORT -->
+    <div id="bugModal" class="modal">
+        <div class="auth-card" style="width: 100%; max-width: 450px;">
+            <h2 style="margin-bottom: 5px;">Report a Bug</h2>
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 20px;">Tell us what went wrong and we will fix it in an upcoming update.</p>
+            <form name="bug-report" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="return submitBugReport(event)">
+                <input type="hidden" name="form-name" value="bug-report">
+                <p style="display: none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+                <label>Your Email</label>
+                <input type="email" id="bugEmail" name="email" placeholder="yourname@gmail.com">
+                <label>Where did it happen?</label>
+                <select id="bugArea" name="area">
+                    <option value="Dashboard">Dashboard</option>
+                    <option value="Orders">Orders</option>
+                    <option value="Login / Account">Login / Account</option>
+                    <option value="Settings">Settings</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label>What happened?</label>
+                <textarea id="bugMessage" name="message" rows="4" placeholder="Describe the bug, what you expected, and what happened instead..." style="width: 100%; padding: 12px 15px; margin-bottom: 15px; background: rgba(100,100,100,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button type="submit" class="btn">Send Report</button>
+                    <button type="button" class="btn btn-outline" onclick="closeBugModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="bimo-core.js"></script>
+>>>>>>> feature/financial-reporting
     <script>
         const ua = navigator.userAgent || navigator.vendor || window.opera;
         const bodyEl = document.getElementById('appBody');
@@ -743,7 +812,11 @@
         let installAvailable = false;
 
         const AUTH_COPY = {
+<<<<<<< HEAD
             register: { title: 'Create your account', sub: 'Step 1 of 3 · Enter your email or phone and choose a password.', btn: 'Continue' },
+=======
+            register: { title: 'Create your account', sub: 'Sign up with email or phone and set up your business profile.', btn: 'Sign Up' },
+>>>>>>> feature/financial-reporting
             login:    { title: 'Welcome back', sub: 'Sign in with your email or phone and password.', btn: 'Login' },
             recover:  { title: 'Account recovery', sub: 'Enter your registered email or phone, plus one other saved detail.', btn: 'Verify Details' },
             reset:    { title: 'Set a new password', sub: 'Choose a new password for your account.', btn: 'Update Password' }
@@ -762,9 +835,12 @@
             el('passInput').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('passHint').style.display = isReg ? 'inline' : 'none';
             el('googleWrap').style.display = (isReg || isLogin) ? 'block' : 'none';
+<<<<<<< HEAD
             el('confirmWrap').style.display = isReg ? 'block' : 'none';
             el('showPassWrap').style.display = (isReg || isLogin) ? 'flex' : 'none';
             el('passInput').autocomplete = isReg ? 'new-password' : 'current-password';
+=======
+>>>>>>> feature/financial-reporting
             el('forgotBtn').style.display = isLogin ? 'block' : 'none';
             el('switchModeBtn').style.display = (isReg || isLogin) ? 'block' : 'none';
             el('backToLoginBtn').style.display = (isRec || isReset) ? 'block' : 'none';
@@ -775,6 +851,7 @@
             el('authActionBtn').textContent = copy.btn;
         }
 
+<<<<<<< HEAD
         function setPasswordVisibility(show) {
             ['passInput', 'confirmPassInput'].forEach(id => { const f = el(id); if (f) f.type = show ? 'text' : 'password'; });
         }
@@ -804,6 +881,11 @@
             if (card) card.scrollTop = 0;
             const first = el(next === 'login' ? 'loginId' : 'regEmail');
             if (first && !('ontouchstart' in window)) first.focus({ preventScroll: true });   // skip on phones: avoids a surprise keyboard
+=======
+        function toggleAuthMode() {
+            setAuthView(authMode === 'register' ? 'login' : 'register');
+            el('passInput').value = '';
+>>>>>>> feature/financial-reporting
         }
         function showRecovery() { recoveryKey = null; setAuthView('recover'); }
         function backToLogin() {
@@ -844,11 +926,16 @@
                 reader.readAsDataURL(file);
             });
         }
+<<<<<<< HEAD
         el('obLogo').addEventListener('change', async e => {
+=======
+        el('regLogo').addEventListener('change', async e => {
+>>>>>>> feature/financial-reporting
             regLogoData = await fileToLogoData(e.target.files[0]);
             if (regLogoData) showToast('Logo ready. Save your profile to apply it.');
         });
 
+<<<<<<< HEAD
         // ---------- SIGN-UP: step 1 (details) -> step 2 (OTP) -> step 3 (shop) -> account ----------
         // Nothing is saved until step 3 succeeds, so a half-finished sign-up never leaves an account behind.
         // The password is kept in memory only (never written to storage) and cleared when the flow ends.
@@ -1003,6 +1090,30 @@
             });
             el('otpScreen').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'otpInput') { e.preventDefault(); verifyOtp(); } });
             el('onboardScreen').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.tagName === 'INPUT') && e.target.type !== 'file') { e.preventDefault(); finishOnboarding(); } });
+=======
+        async function handleRegister() {
+            const email = el('regEmail').value.trim().toLowerCase();
+            const phone = el('regPhone').value.trim();
+            const brandName = el('regBrandName').value.trim();
+            const brandType = el('regBrandType').value;
+            const brandUrl = el('regBrandUrl').value.trim();
+            const pass = el('passInput').value;
+
+            if (!brandName) { showToast('Business / brand name is required.', 'error'); return; }
+            if (!email && !phone) { showToast('Enter an email or a phone number — at least one is required.', 'error'); return; }
+            if (email && !Bimo.validate.email(email)) { showToast('The email address is not valid.', 'error'); return; }
+            if (phone && !Bimo.validate.phone(phone)) { showToast('The phone number is not valid (digits only, optional +).', 'error'); return; }
+            if (!Bimo.validate.url(brandUrl)) { showToast('The business link must start with http:// or https://', 'error'); return; }
+            const err = Bimo.validate.password(pass);
+            if (err) { showToast(err, 'error'); return; }
+
+            const { user, error } = await Bimo.accounts.create({ email, phone, brandName, brandType, brandUrl, logo: regLogoData, pass });
+            if (error) { showToast(error, 'error'); return; }
+
+            el('passInput').value = '';
+            showAppShell(Bimo.session.start(user));
+            showToast('Account created. Welcome to BIMO!');
+>>>>>>> feature/financial-reporting
         }
 
         async function handleLogin() {
@@ -1078,6 +1189,16 @@
                 s.onerror = resolve;
                 document.head.appendChild(s);
             });
+el('navBrandTitle').textContent = user.brandName || 'BIMO Business';
+const url = user.brandUrl || '';
+el('navBrandLinkText').textContent = url ? url.replace(/^https?:\/\//, '') : '';
+
+// FIXED LINE: Safely validates that the link begins with http:// or https://
+el('brandLinkTarget').href = /^https?:\/\//i.test(url) ? url : '#';
+
+el('cardUserGmail').textContent = user.email || user.phone || '';
+el('welcomeBannerTitle').textContent = (user.brandName || 'Your business') + ' ';
+el('heroSubtitle').textContent = user.brandUrl;o
         }
         async function setupGoogleButton() {
             const clientId = getGsiClientId();
@@ -1137,12 +1258,16 @@
         }
 
         function checkSession() {
+<<<<<<< HEAD
             let user = Bimo.session.active();
             if (user && user.expiresAt && Date.now() > user.expiresAt) {
                 showToast('Your session has expired. Please sign in again.', 'error');
                 if (Bimo.session.end) Bimo.session.end(); else localStorage.removeItem('bimo_session');
                 user = null;
             }
+=======
+            const user = Bimo.session.active();
+>>>>>>> feature/financial-reporting
             if (user) {
                 showAppShell(user);
             } else {
@@ -1175,6 +1300,7 @@
             el('navBrandTitle').textContent = user.brandName || 'BIMO Business';
             const url = user.brandUrl || '';
             el('navBrandLinkText').textContent = url ? url.replace(/^https?:\/\//, '') : 'Connect business ↗';
+<<<<<<< HEAD
 el('navBrandTitle').textContent = user.brandName || 'BIMO Business';
 const url = user.brandUrl || '';
 el('navBrandLinkText').textContent = url ? url.replace(/^https?:\/\//, '') : '';
@@ -1185,6 +1311,8 @@ el('brandLinkTarget').href = /^https?:\/\//i.test(url) ? url : '#';
 el('cardUserGmail').textContent = user.email || user.phone || '';
 el('welcomeBannerTitle').textContent = (user.brandName || 'Your business') + ' ';
 el('heroSubtitle').textContent = user.brandUrl;
+=======
+>>>>>>> feature/financial-reporting
             el('brandLinkTarget').href = /^https?:\/\//.test(url) ? url : '#';
             el('cardUserGmail').textContent = user.email || user.phone || '';
             el('welcomeBannerTitle').textContent = (user.brandName || 'Your business') + ' Workspace';
@@ -1681,12 +1809,17 @@ el('heroSubtitle').textContent = user.brandUrl;
         }
         Bimo.install.available(avail => { installAvailable = avail; syncInstallBtn(); });
         window.addEventListener('appinstalled', () => showToast('BIMO installed! Find it on your home screen.'));
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/financial-reporting
         // ---------- BUG REPORT (Netlify Form) ----------
         function openBugModal() {
             const user = Bimo.session.active();
             if (user) document.getElementById('bugEmail').value = user.email || user.phone || '';
             document.getElementById('bugModal').classList.add('active');
         }
+<<<<<<< HEAD
         function closeBugModal(e) { 
             if (e && e.preventDefault) e.preventDefault();
             document.getElementById('bugModal').classList.remove('active'); 
@@ -1706,12 +1839,23 @@ el('heroSubtitle').textContent = user.brandUrl;
                 return false; 
             }
             
+=======
+        function closeBugModal() { document.getElementById('bugModal').classList.remove('active'); }
+        function submitBugReport(e) {
+            e.preventDefault();
+            const form = e.target;
+            const email = document.getElementById('bugEmail').value.trim();
+            const message = document.getElementById('bugMessage').value.trim();
+            if (!Bimo.validate.email(email)) { showToast('Please enter a valid email address.', 'error'); return false; }
+            if (message.length < 10) { showToast('Please describe the bug in at least 10 characters.', 'error'); return false; }
+>>>>>>> feature/financial-reporting
             fetch('/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(new FormData(form)).toString()
             }).then(() => {
                 form.reset();
+<<<<<<< HEAD
                 document.getElementById('bugModal').classList.remove('active');
                 showToast('Bug report sent. Thank you for helping improve BIMO!');
             }).catch(() => {
@@ -1769,6 +1913,22 @@ el('heroSubtitle').textContent = user.brandUrl;
                 });
             });
         }
+=======
+                closeBugModal();
+                showToast('Bug report sent. Thank you for helping improve BIMO!');
+            }).catch(() => {
+                showToast('Could not send the report. Check your connection and try again.', 'error');
+            });
+            return false;
+        }
+
+        // ---------- INIT ----------
+        checkSession();
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+        }
+
+>>>>>>> feature/financial-reporting
     </script>
 </body>
 </html>
