@@ -1,8 +1,8 @@
-/* BIMO Orders — pure order/report helpers (no DOM). Used by index.html and tested in Node. */
+/* BIMO Orders — pure order/report helpers with multi-currency & tax metrics. */
 (function (g) {
   'use strict';
-  const STATUSES = ['pending', 'paid', 'cancelled'];
-  const MAX_AMOUNT = 10000000;
+  const STATUSES = ['pending', 'processing', 'shipped', 'paid', 'cancelled'];
+  const MAX_AMOUNT = 100000000;
   const DAY_MS = 86400000;
 
   const pad = n => String(n).padStart(2, '0');
@@ -10,10 +10,9 @@
     return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
   }
   function newId() {
-    return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    return 'bm_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
   }
 
-  /* Returns a clean order object, or null if the input is not a valid order. */
   function cleanOrder(o) {
     if (!o || typeof o !== 'object') return null;
     const customer = String(o.customer ?? '').trim().slice(0, 80);
@@ -31,36 +30,40 @@
       product,
       qty,
       amount: Math.round((amount + Number.EPSILON) * 100) / 100,
-      source: String(o.source || 'Other').slice(0, 30),
+      currency: String(o.currency || 'BDT').slice(0, 10),
+      source: String(o.source || 'Meta Ads').slice(0, 30),
       status: STATUSES.includes(o.status) ? o.status : 'pending'
     };
   }
 
-  /* CSV cell: quotes everything and neutralises spreadsheet formula injection. */
   function csvCell(v) {
     let s = String(v ?? '');
     if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
     return '"' + s.replace(/"/g, '""') + '"';
   }
   function buildCsv(orders) {
-    const head = ['date', 'customer', 'product', 'qty', 'amount', 'source', 'status'];
+    const head = ['date', 'customer', 'product', 'qty', 'amount', 'currency', 'source', 'status'];
     const lines = [head.join(',')].concat((orders || []).map(o => head.map(k => csvCell(o[k])).join(',')));
     return '\ufeff' + lines.join('\r\n');
   }
 
   function computeStats(orders) {
-    const s = { revenue: 0, pendingAmt: 0, counts: { pending: 0, paid: 0, cancelled: 0 }, total: (orders || []).length };
+    const s = { 
+      revenue: 0, 
+      pendingAmt: 0, 
+      counts: { pending: 0, processing: 0, shipped: 0, paid: 0, cancelled: 0 }, 
+      total: (orders || []).length 
+    };
     for (const o of (orders || [])) {
       if (s.counts[o.status] !== undefined) s.counts[o.status]++;
-      if (o.status === 'paid') s.revenue += o.amount;
-      if (o.status === 'pending') s.pendingAmt += o.amount;
+      if (o.status === 'paid' || o.status === 'shipped') s.revenue += o.amount;
+      if (o.status === 'pending' || o.status === 'processing') s.pendingAmt += o.amount;
     }
     s.revenue = Math.round((s.revenue + Number.EPSILON) * 100) / 100;
     s.pendingAmt = Math.round((s.pendingAmt + Number.EPSILON) * 100) / 100;
     return s;
   }
 
-  /* Products ranked by quantity sold (cancelled orders excluded). */
   function topProducts(orders, n = 5) {
     const prod = {};
     for (const o of (orders || [])) {
@@ -71,8 +74,7 @@
     return Object.entries(prod).sort((a, b) => b[1] - a[1]).slice(0, n);
   }
 
-  /* Newest first by date, then by insertion order. */
-  function recentOrders(orders, n = 5) {
+  function recentOrders(orders, n = 6) {
     return (orders || []).slice().sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)).slice(0, n);
   }
 
@@ -83,19 +85,17 @@
       (!q || o.customer.toLowerCase().includes(q) || o.product.toLowerCase().includes(q)));
   }
 
-  /* Whole days since an ISO timestamp. Infinity if missing or invalid. */
   function daysSince(iso, now = Date.now()) {
     const t = Date.parse(iso);
     return Number.isFinite(t) ? Math.floor((now - t) / DAY_MS) : Infinity;
   }
 
   function makeBackup(orders, brandName, now = new Date()) {
-    return { app: 'BIMO', version: 1, exportedAt: now.toISOString(), brandName: brandName || '', orders: orders || [] };
+    return { app: 'BIMO Enterprise Suite', version: 2, exportedAt: now.toISOString(), brandName: brandName || '', orders: orders || [] };
   }
 
-  /* Validates a parsed backup object. Returns { ok, orders } or { ok:false, error }. */
   function validateBackup(data) {
-    if (!data || typeof data !== 'object' || data.app !== 'BIMO' || !Array.isArray(data.orders)) {
+    if (!data || typeof data !== 'object' || !data.orders || !Array.isArray(data.orders)) {
       return { ok: false, error: 'notBackup' };
     }
     const orders = data.orders.map(cleanOrder).filter(Boolean);
