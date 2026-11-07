@@ -1,0 +1,10 @@
+el('navBrandTitle').textContent = user.brandName || 'BIMO Business';
+const url = user.brandUrl || '';
+el('navBrandLinkText').textContent = url ? url.replace(/^https?:\/\//, '') : '';
+
+// FIXED LINE: Safely validates that the link begins with http:// or https://
+el('brandLinkTarget').href = /^https?:\/\//i.test(url) ? url : '#';
+
+el('cardUserGmail').textContent = user.email || user.phone || '';
+el('welcomeBannerTitle').textContent = (user.brandName || 'Your business') + ' ';
+el('heroSubtitle').textContent = user.brandUrl;
