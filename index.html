@@ -1,125 +1,746 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIMO Workspace</title>
-    <link rel="manifest" href="manifest.webmanifest">
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
-        .screen { display: none; }
-        .screen.active { display: block; }
-        input, select, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #333; background: #222; color: #fff; box-sizing: border-box; }
-        button { background: #0070f3; font-weight: bold; cursor: pointer; border: none; }
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: #fff; padding: 12px 24px; border-radius: 8px; display: none; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>BIMO Business</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--ink:#e2e8f0;--muted:#94a3b8;--line:#334155;--accent:#0ea5e9;--ok:#16a34a;--bad:#dc2626;--warn:#d97706;--input:#0b1222;--focus:#38bdf8}
+body.light{--bg:#f1f5f9;--card:#ffffff;--ink:#0f172a;--muted:#475569;--line:#cbd5e1;--input:#ffffff}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans Bengali",sans-serif;background:var(--bg);color:var(--ink);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:960px;margin:0 auto;padding:16px}
+.screen{display:none}.screen.active{display:block}
+h1,h2,h3{margin:.3em 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.auth{max-width:420px;margin:32px auto}
+label.field{display:block;margin:10px 0}
+label.field>span{display:block;font-size:14px;color:var(--muted);margin-bottom:4px}
+input,select,button{font:inherit;padding:11px;border-radius:8px;border:1px solid var(--line);background:var(--input);color:var(--ink);width:100%;min-height:44px}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+button{background:var(--accent);color:#fff;border:0;font-weight:600;cursor:pointer;width:auto;padding:10px 16px}
+button.block{width:100%;margin-top:10px}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.danger{background:var(--bad)}button.ok{background:var(--ok)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 150px}.row>button{flex:0 0 auto}
+.muted{color:var(--muted);font-size:14px}
+.check{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px;color:var(--muted)}
+.check input{width:auto;min-height:0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tabs button{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{margin:0}.stat b{display:block;font-size:22px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+td button{padding:6px 8px;font-size:13px;margin:2px;min-height:34px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;color:#fff}
+.s-paid{background:var(--ok)}.s-pending{background:var(--warn)}.s-cancelled{background:var(--bad)}
+.tablewrap{overflow-x:auto}
+.header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.brandlogo{width:40px;height:40px;border-radius:8px;object-fit:cover;vertical-align:middle;margin-right:8px}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 14px;border-radius:10px;margin:10px 0;background:var(--accent);color:#fff}
+.banner.warn{background:var(--warn)}
+.banner button{background:#fff;color:#0f172a}
+.list div{padding:8px 0;border-bottom:1px solid var(--line)}
+.list div:last-child{border-bottom:0}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#334155;color:#fff;padding:12px 20px;border-radius:8px;display:none;z-index:1000;max-width:92%;box-shadow:0 4px 12px #0007;text-align:center}
+.toast.bad{background:var(--bad)}
+.hidden{display:none!important}
+@media (max-width:520px){.header{flex-direction:column;align-items:flex-start}.tabs button{flex:1 1 30%}}
+</style>
 </head>
 <body>
+<div class="wrap">
 
-    <div id="authScreen" class="screen active">
-        <h2>Create your account</h2>
-        <input type="email" id="regEmail" placeholder="Email Address">
-        <input type="text" id="regPhone" placeholder="Mobile Phone Number">
-        <input type="password" id="passInput" placeholder="New Password">
-        <button onclick="handleRegister()">Create Account</button>
+  <div id="updateBanner" class="banner hidden" role="status">
+    <span data-i18n="updateReady">A new version is ready.</span>
+    <button onclick="applyUpdate()" data-i18n="reloadNow">Reload now</button>
+  </div>
+  <div id="backupBanner" class="banner warn hidden" role="status">
+    <span id="backupText"></span>
+    <button onclick="showTab('backup')" data-i18n="backupNow">Backup now</button>
+  </div>
+
+  <!-- AUTH -->
+  <section id="auth" class="screen active">
+    <div class="card auth">
+      <h2 data-i18n="appTitle">BIMO Business</h2>
+      <div class="tabs">
+        <button id="tabLogin" class="on" onclick="authTab('login')" data-i18n="logIn">Log in</button>
+        <button id="tabReg" onclick="authTab('register')" data-i18n="createAccount">Create account</button>
+      </div>
+      <form id="loginForm" onsubmit="event.preventDefault();doLogin()">
+        <label class="field"><span data-i18n="emailOrPhone">Email or phone</span>
+          <input id="loginId" autocomplete="username" inputmode="email"></label>
+        <label class="field"><span data-i18n="password">Password</span>
+          <input id="loginPass" type="password" autocomplete="current-password"></label>
+        <label class="check"><input type="checkbox" onchange="togglePw('loginPass',this.checked)"><span data-i18n="showPassword">Show password</span></label>
+        <button type="submit" class="block" data-i18n="logIn">Log in</button>
+      </form>
+      <form id="regForm" class="hidden" onsubmit="event.preventDefault();doRegister()">
+        <label class="field"><span data-i18n="email">Email</span>
+          <input id="regEmail" type="email" autocomplete="email" inputmode="email"></label>
+        <label class="field"><span data-i18n="phoneOpt">Mobile number (optional)</span>
+          <input id="regPhone" type="tel" autocomplete="tel" inputmode="tel"></label>
+        <label class="field"><span data-i18n="password">Password</span>
+          <input id="regPass" type="password" autocomplete="new-password"></label>
+        <p class="muted" data-i18n="pwHint">At least 8 characters, with upper and lower case letters</p>
+        <label class="check"><input type="checkbox" onchange="togglePw('regPass',this.checked)"><span data-i18n="showPassword">Show password</span></label>
+        <button type="submit" class="block" data-i18n="createAccount">Create account</button>
+      </form>
+      <p class="muted" data-i18n="localNote">Your data stays on this device. Download a backup regularly.</p>
+      <div class="row" style="justify-content:flex-end"><button class="ghost" onclick="toggleLang()" id="langBtnAuth">বাংলা</button></div>
+    </div>
+  </section>
+
+  <!-- ONBOARDING -->
+  <section id="onboard" class="screen">
+    <div class="card auth">
+      <h2 data-i18n="setupTitle">Set up your shop</h2>
+      <label class="field"><span data-i18n="brandName">Business / brand name</span>
+        <input id="brandName" maxlength="80"></label>
+      <label class="field"><span data-i18n="brandUrl">Website or Facebook page link (optional)</span>
+        <input id="brandUrl" maxlength="200" inputmode="url" placeholder="https://"></label>
+      <label class="field"><span data-i18n="logo">Logo (optional)</span>
+        <input id="brandLogo" type="file" accept="image/*"></label>
+      <button class="block" onclick="saveBrand()" data-i18n="finish">Finish and open workspace</button>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section id="app" class="screen">
+    <div class="header">
+      <div>
+        <span id="navLogo"></span><b id="navBrand" style="font-size:18px"></b>
+        <div><a id="navLink" target="_blank" rel="noopener noreferrer" class="muted"></a></div>
+      </div>
+      <div class="row" style="flex:0 0 auto">
+        <button class="ghost" id="langBtn" onclick="toggleLang()">বাংলা</button>
+        <button class="ghost" onclick="toggleTheme()" data-i18n="theme">Theme</button>
+        <button class="ghost" onclick="logout()" data-i18n="logout">Log out</button>
+      </div>
     </div>
 
-    <div id="otpScreen" class="screen">
-        <h2>Verify your phone</h2>
-        <p>DEMO MODE: Enter any code to continue.</p>
-        <button onclick="showScreen('onboardScreen')">Verify</button>
+    <div class="tabs">
+      <button data-tab="dash" class="on" onclick="showTab('dash')" data-i18n="tabDash">Dashboard</button>
+      <button data-tab="orders" onclick="showTab('orders')" data-i18n="tabOrders">Orders</button>
+      <button data-tab="backup" onclick="showTab('backup')" data-i18n="tabBackup">Backup</button>
     </div>
 
-    <div id="onboardScreen" class="screen">
-        <h2>Set up your shop</h2>
-        <input type="text" id="brandName" placeholder="Business / Brand Name">
-        <input type="text" id="brandUrl" placeholder="Official Page / Site Link">
-        <input type="file" id="regLogo">
-        <button onclick="finishOnboarding()">Finish & Open Workspace</button>
+    <div id="tab-dash" class="tabpane">
+      <div class="card"><div id="statCards" class="stats"></div></div>
+      <div class="row" style="align-items:stretch">
+        <div class="card" style="flex:1 1 300px"><h3 data-i18n="topProducts">Top products</h3><div id="topProducts" class="list muted"></div></div>
+        <div class="card" style="flex:1 1 300px"><h3 data-i18n="recentOrders">Recent orders</h3><div id="recentOrders" class="list muted"></div></div>
+      </div>
     </div>
 
-    <div id="workspaceScreen" class="screen">
-        <h1 id="navBrandTitle">BIMO Business</h1>
-        <a id="brandLinkTarget" href="#"><span id="navBrandLinkText"></span></a>
-        <p id="cardUserGmail"></p>
-        <h3 id="welcomeBannerTitle"></h3>
-        <p id="heroSubtitle"></p>
+    <div id="tab-orders" class="tabpane hidden">
+      <div class="card">
+        <h3 id="formTitle" data-i18n="newOrder">New order</h3>
+        <form onsubmit="event.preventDefault();saveOrderForm()">
+          <div class="row">
+            <label class="field" style="flex:1 1 150px"><span data-i18n="date">Date</span><input id="oDate" type="date" required></label>
+            <label class="field" style="flex:1 1 200px"><span data-i18n="customer">Customer name</span><input id="oCustomer" maxlength="80" required></label>
+            <label class="field" style="flex:1 1 200px"><span data-i18n="product">Product</span><input id="oProduct" maxlength="120" required></label>
+          </div>
+          <div class="row">
+            <label class="field"><span data-i18n="qty">Qty</span><input id="oQty" type="number" min="1" step="1" value="1" required></label>
+            <label class="field"><span data-i18n="amount">Amount (৳)</span><input id="oAmount" type="number" min="0" step="0.01" required></label>
+            <label class="field"><span data-i18n="source">Source</span>
+              <select id="oSource">
+                <option>WhatsApp</option><option>Facebook</option><option>Instagram</option>
+                <option>Website</option><option>Other</option>
+              </select></label>
+            <label class="field"><span data-i18n="status">Status</span>
+              <select id="oStatus">
+                <option value="pending" data-i18n="pending">Pending</option>
+                <option value="paid" data-i18n="paid">Paid</option>
+              </select></label>
+          </div>
+          <div class="row">
+            <button type="submit" id="saveBtn" data-i18n="saveOrder">Save order</button>
+            <button type="button" id="cancelEditBtn" class="ghost hidden" onclick="cancelEdit()" data-i18n="cancelEdit">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <input id="search" type="search" data-i18n-ph="search" placeholder="Search customer or product" oninput="renderOrders()" style="flex:2 1 220px">
+          <select id="filter" style="flex:0 0 auto;width:auto" onchange="renderOrders()">
+            <option value="all" data-i18n="all">All</option>
+            <option value="pending" data-i18n="pending">Pending</option>
+            <option value="paid" data-i18n="paid">Paid</option>
+            <option value="cancelled" data-i18n="cancelledS">Cancelled</option>
+          </select>
+          <button class="ghost" onclick="exportCsv()" data-i18n="exportCsv">Export CSV</button>
+        </div>
+        <div class="tablewrap"><table>
+          <thead><tr>
+            <th data-i18n="colDate">Date</th><th data-i18n="colCustomer">Customer</th><th data-i18n="colProduct">Product</th>
+            <th data-i18n="colQty">Qty</th><th data-i18n="colAmount">Amount</th><th data-i18n="colSource">Source</th>
+            <th data-i18n="colStatus">Status</th><th></th>
+          </tr></thead>
+          <tbody id="orderRows"></tbody>
+        </table></div>
+        <p id="noOrders" class="muted hidden" data-i18n="noOrders">No orders match this view.</p>
+      </div>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <div id="tab-backup" class="tabpane hidden">
+      <div class="card">
+        <h3 data-i18n="backupTitle">Backup</h3>
+        <p class="muted" data-i18n="backupDesc">Download a copy of all your orders. Keep it safe, for example by emailing it to yourself or saving it to Google Drive.</p>
+        <p id="lastBackup" class="muted"></p>
+        <button onclick="exportBackup()" data-i18n="downloadBackup">Download backup</button>
+      </div>
+      <div class="card">
+        <h3 data-i18n="restoreTitle">Restore</h3>
+        <p class="muted" data-i18n="restoreDesc">Restoring replaces the orders on this device with the ones in the file.</p>
+        <input id="restoreFile" type="file" accept="application/json,.json">
+        <button class="danger block" onclick="restoreBackup()" data-i18n="restoreBtn">Restore from file</button>
+      </div>
+    </div>
+  </section>
+</div>
 
-    <script src="bimo-core.js"></script>
-    <script>
-        const el = id => document.getElementById(id);
-        const showToast = msg => { const t = el('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); };
-        
-        let regLogoData = '';
-        let user = { brandName: '', brandUrl: '', email: '', phone: '' };
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-        function fileToLogoData(file) {
-            return new Promise(resolve => {
-                if (!file || !file.type.startsWith('image/')) return resolve('');
-                const reader = new FileReader();
-                reader.onerror = () => resolve('');
-                reader.onload = () => {
-                    const img = new Image();
-                    img.onerror = () => resolve('');
-                    img.onload = () => {
-                        const size = 256;
-                        const canvas = document.createElement('canvas');
-                        canvas.width = size; canvas.height = size;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, size, size);
-                        resolve(canvas.toDataURL('image/jpeg', 0.85));
-                    };
-                    img.src = reader.result;
-                };
-                reader.readAsDataURL(file);
-            });
-        }
+<script src="bimo-core.js"></script>
+<script src="bimo-orders.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const O = BimoOrders;
+const LOGIN_MAX_TRIES = 5, LOCK_MS = 5 * 60 * 1000, SESSION_MS = 12 * 3600 * 1000;
+const BACKUP_REMIND_DAYS = 7;
 
-        el('regLogo').addEventListener('change', async e => {
-            if (e.target.files.length > 0) {
-                regLogoData = await fileToLogoData(e.target.files[0]);
-                if (regLogoData) showToast('Logo ready. Save your profile to apply it.');
-            }
-        });
+let lang = Bimo.store.get('bimo_lang', 'en');
+let cur = null;          // logged-in account record
+let orders = [];         // orders for cur
+let editingId = null;    // id of the order being edited, or null
+let pendingLogo = '';
+let updateRequested = false;
 
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            el(id).classList.add('active');
-            window.scrollTo(0, 0);
-        }
+/* ---------- translations ---------- */
+const T = {
+  en: {
+    appTitle: 'BIMO Business', logIn: 'Log in', createAccount: 'Create account', emailOrPhone: 'Email or phone',
+    email: 'Email', phoneOpt: 'Mobile number (optional)', password: 'Password',
+    pwHint: 'At least 8 characters, with upper and lower case letters', showPassword: 'Show password',
+    localNote: 'Your data stays on this device. Download a backup regularly.',
+    setupTitle: 'Set up your shop', brandName: 'Business / brand name',
+    brandUrl: 'Website or Facebook page link (optional)', logo: 'Logo (optional)', finish: 'Finish and open workspace',
+    logout: 'Log out', theme: 'Theme', tabDash: 'Dashboard', tabOrders: 'Orders', tabBackup: 'Backup',
+    totalOrders: 'Total orders', paidRevenue: 'Paid revenue', pendingValue: 'Pending value',
+    pendingOrders: 'Pending orders', cancelled: 'Cancelled', topProducts: 'Top products', recentOrders: 'Recent orders',
+    noSales: 'No sales yet. Add your first order in the Orders tab.', noRecent: 'No orders yet.',
+    newOrder: 'New order', editOrder: 'Edit order', date: 'Date', customer: 'Customer name', product: 'Product',
+    qty: 'Qty', amount: 'Amount (৳)', source: 'Source', status: 'Status', saveOrder: 'Save order',
+    saveChanges: 'Save changes', cancelEdit: 'Cancel', search: 'Search customer or product', all: 'All',
+    pending: 'Pending', paid: 'Paid', cancelledS: 'Cancelled', exportCsv: 'Export CSV',
+    colDate: 'Date', colCustomer: 'Customer', colProduct: 'Product', colQty: 'Qty', colAmount: 'Amount',
+    colSource: 'Source', colStatus: 'Status', noOrders: 'No orders match this view.',
+    markPaid: 'Mark paid', markCancelled: 'Cancel', reopen: 'Reopen', edit: 'Edit', del: 'Delete',
+    backupTitle: 'Backup', backupDesc: 'Download a copy of all your orders. Keep it safe, for example by emailing it to yourself or saving it to Google Drive.',
+    downloadBackup: 'Download backup', restoreTitle: 'Restore',
+    restoreDesc: 'Restoring replaces the orders on this device with the ones in the file.', restoreBtn: 'Restore from file',
+    lastBackupNone: 'No backup made yet on this device.', lastBackupAt: 'Last backup: {d} ({n} days ago)',
+    backupNever: 'You have orders but have never made a backup. Download one now.',
+    backupOld: 'No backup for {n} days. Download one now to protect your orders.', backupNow: 'Backup now',
+    updateReady: 'A new version is ready.', reloadNow: 'Reload now',
+    msgEmailBad: 'Enter a valid email.', msgPhoneBad: 'Enter a valid phone number.',
+    msgPwBad: 'Password needs 8+ characters, with upper and lower case.',
+    msgExists: 'An account already exists. Log in instead.', msgStorage: 'Browser storage is unavailable.',
+    msgCreated: 'Account created. Logging you in...', msgNeedLogin: 'Enter your login and password.',
+    msgLocked: 'Too many attempts. Try again in {m} min.', msgWrong: 'Wrong login details.',
+    msgLoggedOut: 'You are logged out.', msgExpired: 'Your session ended. Please log in again.',
+    msgBrandReq: 'Business name is required.', msgUrlBad: 'The link must start with http:// or https://',
+    msgLogoReady: 'Logo ready. Click finish to save.', msgOrderBad: 'Check customer, product, qty (1 or more) and amount.',
+    msgSaved: 'Order saved.', msgUpdated: 'Order updated.', msgSaveFail: 'Could not save. Storage may be full.',
+    msgDelConfirm: 'Delete this order? This cannot be undone.',
+    msgRestoreConfirm: 'Replace {old} current orders with {new} from the backup?',
+    msgRestored: 'Restored {n} orders.', msgSkipped: '{n} invalid rows were skipped.',
+    msgNotBackup: 'This is not a BIMO backup file.', msgBadJson: 'That file could not be read.',
+    msgChooseFile: 'Choose a backup file first.', msgBackupDone: 'Backup downloaded.',
+    msgReqCustomer: 'Customer name is required.'
+  },
+  bn: {
+    appTitle: 'BIMO ব্যবসা', logIn: 'লগ ইন', createAccount: 'অ্যাকাউন্ট খুলুন', emailOrPhone: 'ইমেইল বা ফোন',
+    email: 'ইমেইল', phoneOpt: 'মোবাইল নম্বর (ঐচ্ছিক)', password: 'পাসওয়ার্ড',
+    pwHint: 'কমপক্ষে ৮ অক্ষর, বড় ও ছোট হাতের অক্ষর সহ', showPassword: 'পাসওয়ার্ড দেখান',
+    localNote: 'আপনার তথ্য শুধু এই ডিভাইসে থাকে। নিয়মিত ব্যাকআপ নিন।',
+    setupTitle: 'আপনার দোকান সেটআপ করুন', brandName: 'ব্যবসার নাম',
+    brandUrl: 'ওয়েবসাইট বা ফেসবুক পেজের লিংক (ঐচ্ছিক)', logo: 'লোগো (ঐচ্ছিক)', finish: 'শেষ করে শুরু করুন',
+    logout: 'লগ আউট', theme: 'থিম', tabDash: 'ড্যাশবোর্ড', tabOrders: 'অর্ডার', tabBackup: 'ব্যাকআপ',
+    totalOrders: 'মোট অর্ডার', paidRevenue: 'পরিশোধিত আয়', pendingValue: 'অপেক্ষমাণ মূল্য',
+    pendingOrders: 'অপেক্ষমাণ অর্ডার', cancelled: 'বাতিল', topProducts: 'সেরা পণ্য', recentOrders: 'সাম্প্রতিক অর্ডার',
+    noSales: 'এখনো কোনো বিক্রি নেই। অর্ডার ট্যাবে প্রথম অর্ডার যোগ করুন।', noRecent: 'এখনো কোনো অর্ডার নেই।',
+    newOrder: 'নতুন অর্ডার', editOrder: 'অর্ডার সম্পাদনা', date: 'তারিখ', customer: 'ক্রেতার নাম', product: 'পণ্য',
+    qty: 'পরিমাণ', amount: 'মূল্য (৳)', source: 'উৎস', status: 'অবস্থা', saveOrder: 'অর্ডার সংরক্ষণ',
+    saveChanges: 'পরিবর্তন সংরক্ষণ', cancelEdit: 'বাতিল', search: 'ক্রেতা বা পণ্য খুঁজুন', all: 'সব',
+    pending: 'অপেক্ষমাণ', paid: 'পরিশোধিত', cancelledS: 'বাতিল', exportCsv: 'CSV নামান',
+    colDate: 'তারিখ', colCustomer: 'ক্রেতা', colProduct: 'পণ্য', colQty: 'পরিমাণ', colAmount: 'মূল্য',
+    colSource: 'উৎস', colStatus: 'অবস্থা', noOrders: 'এই ভিউতে কোনো অর্ডার নেই।',
+    markPaid: 'পরিশোধিত', markCancelled: 'বাতিল', reopen: 'আবার খুলুন', edit: 'সম্পাদনা', del: 'মুছুন',
+    backupTitle: 'ব্যাকআপ', backupDesc: 'সব অর্ডারের একটি কপি নামান। নিরাপদ জায়গায় রাখুন, যেমন নিজেকে ইমেইল করে বা Google Drive-এ সংরক্ষণ করে।',
+    downloadBackup: 'ব্যাকআপ নামান', restoreTitle: 'পুনরুদ্ধার',
+    restoreDesc: 'পুনরুদ্ধার করলে এই ডিভাইসের অর্ডার ফাইলের অর্ডার দিয়ে প্রতিস্থাপিত হবে।', restoreBtn: 'ফাইল থেকে পুনরুদ্ধার',
+    lastBackupNone: 'এই ডিভাইসে এখনো কোনো ব্যাকআপ নেওয়া হয়নি।', lastBackupAt: 'শেষ ব্যাকআপ: {d} ({n} দিন আগে)',
+    backupNever: 'অর্ডার আছে কিন্তু কখনো ব্যাকআপ নেওয়া হয়নি। এখনই ব্যাকআপ নিন।',
+    backupOld: '{n} দিন ধরে ব্যাকআপ নেই। অর্ডার রক্ষায় এখনই ব্যাকআপ নিন।', backupNow: 'এখনই ব্যাকআপ',
+    updateReady: 'নতুন সংস্করণ প্রস্তুত।', reloadNow: 'রিলোড করুন',
+    msgEmailBad: 'সঠিক ইমেইল লিখুন।', msgPhoneBad: 'সঠিক ফোন নম্বর লিখুন।',
+    msgPwBad: 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে, বড় ও ছোট হাতের অক্ষর সহ।',
+    msgExists: 'এই অ্যাকাউন্ট আগে থেকেই আছে। লগ ইন করুন।', msgCreated: 'অ্যাকাউন্ট তৈরি হয়েছে। লগ ইন হচ্ছে...',
+    msgNeedLogin: 'লগ ইন তথ্য ও পাসওয়ার্ড লিখুন।', msgLocked: 'অনেকবার ভুল চেষ্টা হয়েছে। {m} মিনিট পরে আবার চেষ্টা করুন।',
+    msgWrong: 'লগ ইন তথ্য ভুল।', msgLoggedOut: 'আপনি লগ আউট হয়েছেন।',
+    msgExpired: 'সেশন শেষ হয়েছে। আবার লগ ইন করুন।', msgBrandReq: 'ব্যবসার নাম লিখুন।',
+    msgUrlBad: 'লিংক অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে।',
+    msgOrderBad: 'ক্রেতা, পণ্য, পরিমাণ (১ বা বেশি) ও মূল্য ঠিক আছে কিনা দেখুন।',
+    msgSaved: 'অর্ডার সংরক্ষিত হয়েছে।', msgUpdated: 'অর্ডার আপডেট হয়েছে।',
+    msgDelConfirm: 'এই অর্ডারটি মুছবেন? এটি ফেরানো যাবে না।',
+    msgRestoreConfirm: 'বর্তমান {old}টি অর্ডার ব্যাকআপের {new}টি অর্ডার দিয়ে প্রতিস্থাপন করবেন?',
+    msgRestored: '{n}টি অর্ডার পুনরুদ্ধার হয়েছে।', msgNotBackup: 'এটি BIMO ব্যাকআপ ফাইল নয়।',
+    msgChooseFile: 'আগে একটি ব্যাকআপ ফাইল বেছে নিন।', msgBackupDone: 'ব্যাকআপ নামানো হয়েছে।',
+    msgReqCustomer: 'ক্রেতার নাম লিখুন।'
+  }
+};
+function t(key, vars) {
+  let s = (T[lang] && T[lang][key]) || T.en[key] || key;
+  if (vars) for (const [k, v] of Object.entries(vars)) s = s.split('{' + k + '}').join(String(v));
+  return s;
+}
+function applyLang() {
+  document.documentElement.lang = lang === 'bn' ? 'bn' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(e => (e.textContent = t(e.dataset.i18n)));
+  document.querySelectorAll('[data-i18n-ph]').forEach(e => (e.placeholder = t(e.dataset.i18nPh)));
+  document.querySelectorAll('#langBtn,#langBtnAuth').forEach(b => (b.textContent = lang === 'bn' ? 'English' : 'বাংলা'));
+  document.title = t('appTitle');
+  if (cur) { renderHeader(); renderDash(); renderOrders(); checkBackupReminder(); }
+  setEditMode(editingId !== null);
+}
+function toggleLang() {
+  lang = lang === 'bn' ? 'en' : 'bn';
+  Bimo.store.set('bimo_lang', lang);
+  applyLang();
+}
 
-        async function handleRegister() {
-            user.email = el('regEmail').value.trim().toLowerCase();
-            user.phone = el('regPhone').value.trim();
-            const pass = el('passInput').value;
+/* ---------- helpers ---------- */
+function toast(msg, bad) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast' + (bad ? ' bad' : '');
+  el.style.display = 'block';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => (el.style.display = 'none'), 3500);
+}
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+  window.scrollTo(0, 0);
+}
+const money = n => '৳' + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+function el(tag, props = {}, text) {
+  const e = document.createElement(tag);
+  Object.assign(e, props);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function download(name, text, type) {
+  const a = el('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function fileToLogoData(file) {
+  return new Promise(resolve => {
+    if (!file || !file.type.startsWith('image/')) return resolve('');
+    const reader = new FileReader();
+    reader.onerror = () => resolve('');
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => resolve('');
+      img.onload = () => {
+        const size = 256, c = el('canvas');
+        c.width = c.height = size;
+        c.getContext('2d').drawImage(img, 0, 0, size, size);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function togglePw(id, show) { $(id).type = show ? 'text' : 'password'; }
 
-            if (!user.email && !user.phone) return showToast('Enter an email or a phone number.');
-            if (!pass || pass.length < 8) return showToast('Password must be at least 8 characters.');
-            
-            showScreen('otpScreen');
-        }
+/* ---------- accounts ---------- */
+const loadUsers = () => Bimo.store.get('bimo_users', []);
+const saveUsers = list => Bimo.store.set('bimo_users', list);
+function findUser(id) {
+  const v = String(id || '').trim().toLowerCase();
+  const phone = v.replace(/[\s-]/g, '');
+  return loadUsers().find(u => u.email === v || (u.phone && u.phone === phone));
+}
+function updateUser(email, patch) {
+  const list = loadUsers();
+  const i = list.findIndex(u => u.email === email);
+  if (i < 0) return false;
+  list[i] = { ...list[i], ...patch };
+  if (!saveUsers(list)) return false;
+  if (cur && cur.email === email) cur = list[i];
+  return true;
+}
+function lockInfo(key) { return Bimo.store.get('bimo_lock', {})[key] || { n: 0, until: 0 }; }
+function setLock(key, info) {
+  const m = Bimo.store.get('bimo_lock', {});
+  m[key] = info;
+  Bimo.store.set('bimo_lock', m);
+}
 
-        function finishOnboarding() {
-            user.brandName = el('brandName').value.trim();
-            user.brandUrl = el('brandUrl').value.trim();
+async function doRegister() {
+  const email = $('regEmail').value.trim().toLowerCase();
+  const phone = $('regPhone').value.replace(/[\s-]/g, '');
+  const pass = $('regPass').value;
+  if (!Bimo.validate.email(email)) return toast(t('msgEmailBad'), true);
+  if (phone && !Bimo.validate.phone(phone)) return toast(t('msgPhoneBad'), true);
+  if (!Bimo.validate.password(pass)) return toast(t('msgPwBad'), true);
+  const list = loadUsers();
+  if (list.some(u => u.email === email || (phone && u.phone === phone))) return toast(t('msgExists'), true);
+  list.push({ email, phone, passHash: await Bimo.makePassRecord(pass), brandName: '', brandUrl: '', logo: '', created: Date.now() });
+  if (!saveUsers(list)) return toast(t('msgStorage'), true);
+  $('regPass').value = '';
+  toast(t('msgCreated'));
+  await signIn(email, pass);
+}
 
-            el('navBrandTitle').textContent = user.brandName || 'BIMO Business';
-            const url = user.brandUrl || '';
-            el('navBrandLinkText').textContent = url ? url.replace(/^https?:\/\//, '') : '';
+async function doLogin() {
+  const id = $('loginId').value;
+  const pass = $('loginPass').value;
+  if (!id || !pass) return toast(t('msgNeedLogin'), true);
+  await signIn(id, pass);
+  $('loginPass').value = '';
+}
 
-            // SECURE FIX: Strict anchored regular expression check to stop DOM XSS
-            el('brandLinkTarget').href = /^https?:\/\//i.test(url) ? url : '#';
+async function signIn(id, pass) {
+  const user = findUser(id);
+  const key = user ? user.email : String(id).trim().toLowerCase();
+  const li = lockInfo(key);
+  if (li.until > Date.now()) {
+    return toast(t('msgLocked', { m: Math.ceil((li.until - Date.now()) / 60000) }), true);
+  }
+  if (!user || !(await Bimo.verifyPassRecord(pass, user))) {
+    const n = li.n + 1;
+    setLock(key, n >= LOGIN_MAX_TRIES ? { n: 0, until: Date.now() + LOCK_MS } : { n, until: 0 });
+    return toast(t('msgWrong'), true);
+  }
+  setLock(key, { n: 0, until: 0 });
+  if (user.pass !== undefined) {   // upgrade legacy plaintext record
+    updateUser(user.email, { pass: undefined, passHash: await Bimo.makePassRecord(pass) });
+  }
+  Bimo.store.set('bimo_session', { email: user.email, exp: Date.now() + SESSION_MS });
+  enter(findUser(user.email));
+}
 
-            // SECURE FIX: Use textContent instead of innerHTML to mitigate DOM text reinterpreted as HTML
-            el('cardUserGmail').textContent = user.email || user.phone || '';
-            el('welcomeBannerTitle').textContent = (user.brandName || 'Your business') + ' ';
-            el('heroSubtitle').textContent = user.brandUrl;
+function logout(message = 'msgLoggedOut', bad = false) {
+  Bimo.store.remove('bimo_session');
+  cur = null; orders = []; editingId = null;
+  authTab('login');
+  show('auth');
+  toast(t(message), bad);
+}
 
-            showScreen('workspaceScreen');
-        }
-    </script>
+/* ---------- onboarding ---------- */
+$('brandLogo').addEventListener('change', async e => {
+  pendingLogo = await fileToLogoData(e.target.files[0]);
+  if (pendingLogo) toast(t('msgLogoReady'));
+});
+function saveBrand() {
+  const name = $('brandName').value.trim();
+  const url = $('brandUrl').value.trim();
+  if (!name) return toast(t('msgBrandReq'), true);
+  if (!Bimo.validate.url(url)) return toast(t('msgUrlBad'), true);
+  updateUser(cur.email, { brandName: name, brandUrl: url, logo: pendingLogo || cur.logo || '' });
+  pendingLogo = '';
+  enter(cur);
+}
+
+/* ---------- session & entry ---------- */
+function enter(user) {
+  if (!user) return show('auth');
+  cur = user;
+  orders = Bimo.store.get(ordersKey(), []).map(O.cleanOrder).filter(Boolean);
+  if (!cur.brandName) {
+    $('brandName').value = ''; $('brandUrl').value = '';
+    return show('onboard');
+  }
+  renderHeader();
+  resetForm();
+  show('app');
+  showTab('dash');
+}
+function restoreSession() {
+  const s = Bimo.store.get('bimo_session', null);
+  if (s && s.exp > Date.now()) return enter(findUser(s.email));
+  if (s) Bimo.store.remove('bimo_session');
+  show('auth');
+}
+function watchSession() {
+  setInterval(() => {
+    if (!cur) return;
+    const s = Bimo.store.get('bimo_session', null);
+    if (!s || s.exp <= Date.now()) logout('msgExpired', true);
+  }, 60 * 1000);
+}
+function authTab(which) {
+  const login = which === 'login';
+  $('loginForm').classList.toggle('hidden', !login);
+  $('regForm').classList.toggle('hidden', login);
+  $('tabLogin').classList.toggle('on', login);
+  $('tabReg').classList.toggle('on', !login);
+}
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  Bimo.store.set('bimo_theme', document.body.classList.contains('light') ? 'light' : 'dark');
+}
+
+function renderHeader() {
+  $('navBrand').textContent = cur.brandName;
+  const logo = $('navLogo');
+  logo.textContent = '';
+  if (cur.logo && cur.logo.startsWith('data:image/')) logo.appendChild(el('img', { className: 'brandlogo', src: cur.logo, alt: '' }));
+  const link = $('navLink');
+  link.textContent = cur.brandUrl ? cur.brandUrl.replace(/^https?:\/\//i, '') : '';
+  if (/^https?:\/\//i.test(cur.brandUrl || '')) link.href = cur.brandUrl; else link.removeAttribute('href');
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('hidden', p.id !== 'tab-' + name));
+  document.querySelectorAll('.tabs button[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+  if (name === 'dash') renderDash();
+  if (name === 'orders') renderOrders();
+  if (name === 'backup') renderBackupInfo();
+  checkBackupReminder();
+}
+
+/* ---------- backup reminders ---------- */
+const lastBackupKey = () => 'bimo_last_backup_' + cur.email;
+const lastBackupIso = () => Bimo.store.get(lastBackupKey(), '');
+function checkBackupReminder() {
+  const banner = $('backupBanner');
+  if (!cur || orders.length === 0) return banner.classList.add('hidden');
+  const last = lastBackupIso();
+  const days = O.daysSince(last);
+  const needs = !last || days >= BACKUP_REMIND_DAYS;
+  banner.classList.toggle('hidden', !needs);
+  $('backupText').textContent = !last ? t('backupNever') : t('backupOld', { n: days });
+}
+function renderBackupInfo() {
+  const last = lastBackupIso();
+  $('lastBackup').textContent = last
+    ? t('lastBackupAt', { d: last.slice(0, 10), n: O.daysSince(last) })
+    : t('lastBackupNone');
+}
+
+/* ---------- orders ---------- */
+const ordersKey = () => 'bimo_orders_' + cur.email;
+function saveOrders() {
+  if (!Bimo.store.set(ordersKey(), orders)) { toast(t('msgSaveFail'), true); return false; }
+  return true;
+}
+function resetForm() {
+  editingId = null;
+  $('oDate').value = O.localToday();
+  $('oCustomer').value = ''; $('oProduct').value = '';
+  $('oQty').value = 1; $('oAmount').value = '';
+  $('oSource').value = 'WhatsApp'; $('oStatus').value = 'pending';
+  setEditMode(false);
+}
+function setEditMode(on) {
+  $('formTitle').textContent = on ? t('editOrder') : t('newOrder');
+  $('saveBtn').textContent = on ? t('saveChanges') : t('saveOrder');
+  $('cancelEditBtn').classList.toggle('hidden', !on);
+}
+function cancelEdit() { resetForm(); }
+
+function saveOrderForm() {
+  const data = {
+    date: $('oDate').value, customer: $('oCustomer').value, product: $('oProduct').value,
+    qty: $('oQty').value, amount: $('oAmount').value, source: $('oSource').value, status: $('oStatus').value
+  };
+  if (!data.customer.trim()) return toast(t('msgReqCustomer'), true);
+  const existing = editingId ? orders.find(x => x.id === editingId) : null;
+  const o = O.cleanOrder({ ...data, id: existing ? existing.id : undefined });
+  if (!o) return toast(t('msgOrderBad'), true);
+  const prev = orders;
+  if (existing) orders = orders.map(x => (x.id === existing.id ? o : x));
+  else orders = [o, ...orders];
+  if (!saveOrders()) { orders = prev; return; }
+  toast(t(existing ? 'msgUpdated' : 'msgSaved'));
+  resetForm();
+  renderOrders();
+  checkBackupReminder();
+}
+function setStatus(id, status) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const prev = o.status;
+  o.status = status;
+  if (!saveOrders()) { o.status = prev; return; }
+  renderOrders();
+}
+function startEdit(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  editingId = id;
+  $('oDate').value = o.date; $('oCustomer').value = o.customer; $('oProduct').value = o.product;
+  $('oQty').value = o.qty; $('oAmount').value = o.amount;
+  $('oSource').value = ['WhatsApp', 'Facebook', 'Instagram', 'Website', 'Other'].includes(o.source) ? o.source : 'Other';
+  $('oStatus').value = o.status === 'cancelled' ? 'pending' : o.status;
+  setEditMode(true);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  $('oCustomer').focus();
+}
+function deleteOrder(id) {
+  if (!confirm(t('msgDelConfirm'))) return;
+  const idx = orders.findIndex(x => x.id === id);
+  if (idx < 0) return;
+  const [removed] = orders.splice(idx, 1);
+  if (!saveOrders()) { orders.splice(idx, 0, removed); return; }
+  if (editingId === id) resetForm();
+  renderOrders();
+  checkBackupReminder();
+}
+function actBtn(label, cls, fn) {
+  const b = el('button', { className: cls, type: 'button' }, label);
+  b.onclick = fn;
+  return b;
+}
+function renderOrders() {
+  if (!cur) return;
+  const list = O.filterOrders(orders, { status: $('filter').value, query: $('search').value });
+  const body = $('orderRows');
+  body.textContent = '';
+  $('noOrders').classList.toggle('hidden', list.length > 0);
+  for (const o of list) {
+    const actions = el('td');
+    if (o.status !== 'paid') actions.appendChild(actBtn(t('markPaid'), 'ok', () => setStatus(o.id, 'paid')));
+    if (o.status === 'paid' || o.status === 'cancelled') actions.appendChild(actBtn(t('reopen'), 'ghost', () => setStatus(o.id, 'pending')));
+    if (o.status !== 'cancelled') actions.appendChild(actBtn(t('markCancelled'), 'ghost', () => setStatus(o.id, 'cancelled')));
+    actions.appendChild(actBtn(t('edit'), 'ghost', () => startEdit(o.id)));
+    actions.appendChild(actBtn(t('del'), 'danger', () => deleteOrder(o.id)));
+    const statusCell = el('td');
+    statusCell.appendChild(el('span', { className: 'pill s-' + o.status }, t(o.status === 'cancelled' ? 'cancelledS' : o.status)));
+    const tr = el('tr');
+    [o.date, o.customer, o.product, o.qty, money(o.amount), o.source].forEach(v => tr.appendChild(el('td', {}, String(v))));
+    tr.appendChild(statusCell);
+    tr.appendChild(actions);
+    body.appendChild(tr);
+  }
+}
+
+/* ---------- dashboard ---------- */
+function renderDash() {
+  if (!cur) return;
+  const s = O.computeStats(orders);
+  const cards = $('statCards');
+  cards.textContent = '';
+  [
+    [t('totalOrders'), s.total],
+    [t('paidRevenue'), money(s.revenue)],
+    [t('pendingValue'), money(s.pendingAmt)],
+    [t('pendingOrders'), s.counts.pending],
+    [t('cancelled'), s.counts.cancelled]
+  ].forEach(([label, value]) => {
+    const d = el('div', { className: 'card stat' });
+    d.appendChild(el('span', { className: 'muted' }, label));
+    d.appendChild(el('b', {}, String(value)));
+    cards.appendChild(d);
+  });
+  const top = O.topProducts(orders);
+  const topBox = $('topProducts');
+  topBox.textContent = '';
+  if (!top.length) topBox.textContent = t('noSales');
+  top.forEach(([name, qty]) => topBox.appendChild(el('div', {}, name + ' — ' + qty)));
+
+  const recent = O.recentOrders(orders);
+  const recBox = $('recentOrders');
+  recBox.textContent = '';
+  if (!recent.length) recBox.textContent = t('noRecent');
+  recent.forEach(o => recBox.appendChild(el('div', {}, `${o.date} · ${o.customer} · ${money(o.amount)} · ${t(o.status === 'cancelled' ? 'cancelledS' : o.status)}`)));
+}
+
+/* ---------- export / backup ---------- */
+function exportCsv() {
+  download(`bimo-orders-${O.localToday()}.csv`, O.buildCsv(orders), 'text/csv;charset=utf-8');
+}
+function exportBackup() {
+  const data = O.makeBackup(orders, cur.brandName);
+  download(`bimo-backup-${O.localToday()}.json`, JSON.stringify(data, null, 2), 'application/json');
+  Bimo.store.set(lastBackupKey(), data.exportedAt);
+  toast(t('msgBackupDone'));
+  renderBackupInfo();
+  checkBackupReminder();
+}
+async function restoreBackup() {
+  const file = $('restoreFile').files[0];
+  if (!file) return toast(t('msgChooseFile'), true);
+  let data;
+  try { data = JSON.parse(await file.text()); }
+  catch { return toast(t('msgBadJson'), true); }
+  const res = O.validateBackup(data);
+  if (!res.ok) return toast(t(res.error === 'notBackup' ? 'msgNotBackup' : 'msgBadJson'), true);
+  if (!confirm(t('msgRestoreConfirm', { old: orders.length, new: res.orders.length }))) return;
+  const prev = orders;
+  orders = res.orders;
+  if (!saveOrders()) { orders = prev; return; }
+  $('restoreFile').value = '';
+  toast(t('msgRestored', { n: res.orders.length }) + (res.skipped ? ' ' + t('msgSkipped', { n: res.skipped }) : ''));
+  resetForm();
+  renderDash();
+  checkBackupReminder();
+}
+
+/* ---------- updates: new versions are offered, never forced mid-work ---------- */
+function applyUpdate() {
+  updateRequested = true;
+  navigator.serviceWorker.getRegistration().then(reg => {
+    if (reg && reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+    else location.reload();
+  });
+}
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    const offer = () => $('updateBanner').classList.remove('hidden');
+    if (reg.waiting && navigator.serviceWorker.controller) offer();
+    reg.addEventListener('updatefound', () => {
+      const w = reg.installing;
+      if (!w) return;
+      w.addEventListener('statechange', () => {
+        if (w.state === 'installed' && navigator.serviceWorker.controller) offer();
+      });
+    });
+  }).catch(() => {});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (updateRequested) location.reload();
+  });
+}
+
+/* ---------- boot ---------- */
+if (Bimo.store.get('bimo_theme', 'dark') === 'light') document.body.classList.add('light');
+applyLang();
+restoreSession();
+watchSession();
+registerServiceWorker();
+</script>
 </body>
-</html>
+                  </html>
