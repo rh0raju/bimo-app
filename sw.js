@@ -1,5 +1,5 @@
-const CACHE = 'bimo-v7';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-512.png', './ux.js', './bimo-core.js'];
+const CACHE = 'bimo-v2';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
