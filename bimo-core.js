@@ -9,6 +9,10 @@
 
   const Bimo = {};
 
+  /* ---------- configuration constants ---------- */
+  const REMEMBER_ME_EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 Days expiration timeline
+  const OTP_EXPIRY_MS = 5 * 60 * 1000; // OTP valid for 5 minutes
+
   /* ---------- storage (fail-safe wrappers with obfuscation) ---------- */
   Bimo.store = {
     get(key, fallback) {
@@ -101,9 +105,67 @@
     { code: "+86", name: "China (+86)" }
   ];
 
-  // Helper method for 6-Digit dynamic challenge token allocations
+  /**
+   * Helper method for 6-Digit dynamic challenge token allocations using Web Crypto API.
+   * Falls back gracefully to standard pseudo-random number generator if unavailable.
+   * @returns {string} 6-digit OTP string
+   */
   Bimo.generate6DigitOTP = function () {
+    const cryptoObj = global.crypto || global.msCrypto;
+    if (cryptoObj && cryptoObj.getRandomValues) {
+      const array = new Uint32Array(1);
+      cryptoObj.getRandomValues(array);
+      const min = 100000;
+      const max = 999999;
+      return (min + (array % (max - min + 1))).toString();
+    }
     return String(Math.floor(100000 + Math.random() * 900000));
+  };
+
+  /**
+   * Dispatches and tracks an OTP challenge session for a specific target.
+   * @param {string} username - Target handle identifier
+   * @returns {string} Generated 6-digit OTP
+   */
+  Bimo.dispatchOTPChallenge = function (username) {
+    const cleanUser = String(username || '').trim().toLowerCase();
+    const otp = Bimo.generate6DigitOTP();
+    const expiresAt = Date.now() + OTP_EXPIRY_MS;
+
+    const challengeRegistry = Bimo.store.get('BIMO_OTP_CHALLENGES', {});
+    challengeRegistry[cleanUser] = { otp, expiresAt };
+    Bimo.store.set('BIMO_OTP_CHALLENGES', challengeRegistry);
+
+    return otp;
+  };
+
+  /**
+   * Verifies an active OTP challenge state payload securely.
+   * @param {string} username - Target handle identifier
+   * @param {string} submittedOtp - The client string matching validation requirements
+   * @returns {boolean} Outcome of comparison state calculations
+   */
+  Bimo.verifyOTPChallenge = function (username, submittedOtp) {
+    const cleanUser = String(username || '').trim().toLowerCase();
+    const challengeRegistry = Bimo.store.get('BIMO_OTP_CHALLENGES', {});
+    const session = challengeRegistry[cleanUser];
+
+    if (!session) return false;
+
+    if (Date.now() > session.expiresAt) {
+      delete challengeRegistry[cleanUser];
+      Bimo.store.set('BIMO_OTP_CHALLENGES', challengeRegistry);
+      return false;
+    }
+
+    const isValid = String(session.otp).trim() === String(submittedOtp).trim();
+
+    if (isValid) {
+      delete challengeRegistry[cleanUser];
+      Bimo.store.set('BIMO_OTP_CHALLENGES', challengeRegistry);
+    }
+
+    return isValid;
   };
 
   // Enforces unique usernames during platform registration
@@ -111,6 +173,16 @@
     const cleanUser = String(username || '').trim().toLowerCase();
     const registry = Bimo.store.get('BIMO_USER_REGISTRY', []);
     return !registry.some(user => user.username === cleanUser);
+  };
+
+  /**
+   * Encrypts/Obfuscates a given string using base64 encoding with string escapement.
+   * @param {string|Date} date - Input registration date to encrypt
+   * @returns {string} Base64 representation of the text value
+   */
+  Bimo.encryptRegistrationDate = function (date) {
+    const rawString = date instanceof Date ? date.toISOString() : String(date);
+    return btoa(unescape(encodeURIComponent(rawString)));
   };
 
   // Persists the newly configured user onto local encrypted workspace blocks
@@ -121,12 +193,16 @@
 
     const registry = Bimo.store.get('BIMO_USER_REGISTRY', []);
     const passHash = await Bimo.makePassRecord(plainPassword);
+    
+    // Automatic encryption of the registration date
+    const encryptedRegDate = Bimo.encryptRegistrationDate(new Date());
 
     const newUserProfile = {
       username: cleanUser,
       passHash: passHash,
       twoFactorMethod: twoFactorMethod,
-      twoFactorTarget: twoFactorTarget
+      twoFactorTarget: twoFactorTarget,
+      registrationDate: encryptedRegDate
     };
 
     registry.push(newUserProfile);
@@ -146,11 +222,18 @@
     return isValid ? userMatch : null;
   };
 
-  // Creates session leases with adjustable validation permanence options
+  /**
+   * Creates session leases with a hardcoded 30-day expiration for "Remember Me" actions.
+   * Else maps directly to local volatile browser memory structures.
+   */
   Bimo.createSessionLease = function (username, rememberMe) {
     const cleanUser = String(username || '').trim().toLowerCase();
     if (rememberMe) {
-      Bimo.store.set('BIMO_ACTIVE_SESSION_LEASE', { username: cleanUser, timestamp: Date.now() });
+      Bimo.store.set('BIMO_ACTIVE_SESSION_LEASE', { 
+        username: cleanUser, 
+        timestamp: Date.now(),
+        expiresAt: Date.now() + REMEMBER_ME_EXPIRY_MS
+      });
     } else {
       try {
         global.sessionStorage.setItem('BIMO_VOLATILE_SESSION_LEASE', cleanUser);
@@ -161,7 +244,14 @@
   // Resolves whether a secure user profile retains a valid application lease at launch
   Bimo.checkActiveSessionLease = function () {
     const persistent = Bimo.store.get('BIMO_ACTIVE_SESSION_LEASE', null);
-    if (persistent && persistent.username) return persistent.username;
+    if (persistent && persistent.username) {
+      // Validate the 30-day expiration timestamp constraints dynamically
+      if (persistent.expiresAt && Date.now() > persistent.expiresAt) {
+        Bimo.terminateSessionLease();
+        return null;
+      }
+      return persistent.username;
+    }
 
     try {
       return global.sessionStorage.getItem('BIMO_VOLATILE_SESSION_LEASE') || null;
@@ -171,21 +261,3 @@
   };
 
   // Resets all terminal session states instantly across browser stores
-  Bimo.terminateSessionLease = function () {
-    Bimo.store.remove('BIMO_ACTIVE_SESSION_LEASE');
-    try {
-      global.sessionStorage.removeItem('BIMO_VOLATILE_SESSION_LEASE');
-    } catch (e) {}
-  };
-
-  // Unified visual toggle driver for masking or exposing input field password types
-  Bimo.togglePasswordVisibility = function (inputElementId) {
-    if (typeof document === 'undefined') return;
-    const element = document.getElementById(inputElementId);
-    if (element) {
-      element.type = element.type === 'password' ? 'text' : 'password';
-    }
-  };
-
-  global.Bimo = Bimo;
-})(typeof window !== 'undefined' ? window : this);
