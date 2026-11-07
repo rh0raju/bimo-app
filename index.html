@@ -4,56 +4,57 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<title>BIMO Business</title>
+<title>BIMO Business Suite — Enterprise E-Commerce</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-180.png">
 <style>
-:root{--bg:#0f172a;--card:#1e293b;--ink:#e2e8f0;--muted:#94a3b8;--line:#334155;--accent:#0ea5e9;--ok:#16a34a;--bad:#dc2626;--warn:#d97706;--input:#0b1222;--focus:#38bdf8}
-body.light{--bg:#f1f5f9;--card:#ffffff;--ink:#0f172a;--muted:#475569;--line:#cbd5e1;--input:#ffffff}
+:root{--bg:#0b0f19;--card:#131d31;--ink:#f8fafc;--muted:#94a3b8;--line:#1e293b;--accent:#3b82f6;--ok:#22c55e;--bad:#ef4444;--warn:#f59e0b;--input:#090d16;--focus:#60a5fa}
+body.light{--bg:#f8fafc;--card:#ffffff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--input:#f1f5f9}
 *{box-sizing:border-box}
-body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans Bengali",sans-serif;background:var(--bg);color:var(--ink);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-.wrap{max-width:960px;margin:0 auto;padding:16px}
+body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans Bengali",sans-serif;background:var(--bg);color:var(--ink);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
 .screen{display:none}.screen.active{display:block}
 h1,h2,h3{margin:.3em 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
-.auth{max-width:420px;margin:32px auto}
-label.field{display:block;margin:10px 0}
-label.field>span{display:block;font-size:14px;color:var(--muted);margin-bottom:4px}
-input,select,button{font:inherit;padding:11px;border-radius:8px;border:1px solid var(--line);background:var(--input);color:var(--ink);width:100%;min-height:44px}
-input:focus,select:focus,button:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
-button{background:var(--accent);color:#fff;border:0;font-weight:600;cursor:pointer;width:auto;padding:10px 16px}
-button.block{width:100%;margin-top:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:16px 0;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+.auth{max-width:440px;margin:40px auto}
+label.field{display:block;margin:12px 0}
+label.field>span{display:block;font-size:13px;color:var(--muted);margin-bottom:5px;font-weight:500}
+input,select,button{font:inherit;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--input);color:var(--ink);width:100%;min-height:46px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+button{background:var(--accent);color:#fff;border:0;font-weight:600;cursor:pointer;width:auto;padding:10px 18px;transition:opacity 0.2s}
+button:hover{opacity:0.9}
+button.block{width:100%;margin-top:12px}
 button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
 button.danger{background:var(--bad)}button.ok{background:var(--ok)}
-button:disabled{opacity:.5;cursor:not-allowed}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.row>*{flex:1 1 150px}.row>button{flex:0 0 auto}
-.muted{color:var(--muted);font-size:14px}
-.check{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px;color:var(--muted)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 160px}.row>button{flex:0 0 auto}
+.muted{color:var(--muted);font-size:13px}
+.check{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:13px;color:var(--muted)}
 .check input{width:auto;min-height:0}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
-.tabs button{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.tabs button{background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:10px 16px}
 .tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.stat{margin:0}.stat b{display:block;font-size:22px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.stat{margin:0;border-left:4px solid var(--accent)}
+.stat b{display:block;font-size:26px;margin-top:4px}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
-td button{padding:6px 8px;font-size:13px;margin:2px;min-height:34px}
-.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;color:#fff}
-.s-paid{background:var(--ok)}.s-pending{background:var(--warn)}.s-cancelled{background:var(--bad)}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td button{padding:6px 10px;font-size:12px;margin:2px;min-height:36px}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;color:#fff;text-transform:uppercase}
+.s-paid{background:var(--ok)}.s-pending{background:var(--warn)}.s-processing{background:#2563eb}.s-shipped{background:#06b6d4}.s-cancelled{background:var(--bad)}
 .tablewrap{overflow-x:auto}
-.header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.brandlogo{width:40px;height:40px;border-radius:8px;object-fit:cover;vertical-align:middle;margin-right:8px}
-.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 14px;border-radius:10px;margin:10px 0;background:var(--accent);color:#fff}
+.header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.brandlogo{width:44px;height:44px;border-radius:10px;object-fit:cover;vertical-align:middle;margin-right:10px}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 16px;border-radius:12px;margin:12px 0;background:var(--accent);color:#fff}
 .banner.warn{background:var(--warn)}
 .banner button{background:#fff;color:#0f172a}
-.list div{padding:8px 0;border-bottom:1px solid var(--line)}
+.list div{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
 .list div:last-child{border-bottom:0}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#334155;color:#fff;padding:12px 20px;border-radius:8px;display:none;z-index:1000;max-width:92%;box-shadow:0 4px 12px #0007;text-align:center}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:14px 24px;border-radius:12px;display:none;z-index:1000;max-width:92%;box-shadow:0 10px 25px rgba(0,0,0,0.4);text-align:center;border:1px solid var(--line)}
 .toast.bad{background:var(--bad)}
 .hidden{display:none!important}
-@media (max-width:520px){.header{flex-direction:column;align-items:flex-start}.tabs button{flex:1 1 30%}}
+@media (max-width:600px){.header{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -68,17 +69,18 @@ td button{padding:6px 8px;font-size:13px;margin:2px;min-height:34px}
     <button onclick="showTab('backup')" data-i18n="backupNow">Backup now</button>
   </div>
 
-  <!-- AUTH -->
+  <!-- AUTH SCREEN -->
   <section id="auth" class="screen active">
     <div class="card auth">
-      <h2 data-i18n="appTitle">BIMO Business</h2>
+      <h2 data-i18n="appTitle">BIMO Business Suite</h2>
+      <p class="muted" style="margin-bottom:16px">Meta-grade unified e-commerce operations manager</p>
       <div class="tabs">
         <button id="tabLogin" class="on" onclick="authTab('login')" data-i18n="logIn">Log in</button>
-        <button id="tabReg" onclick="authTab('register')" data-i18n="createAccount">Create account</button>
+        <button id="tabReg" onclick="authTab('register')" data-i18n="createAccount">Register</button>
       </div>
       <form id="loginForm" onsubmit="event.preventDefault();doLogin()">
         <label class="field"><span data-i18n="emailOrPhone">Email or phone</span>
-          <input id="loginId" autocomplete="username" inputmode="email"></label>
+          <input id="loginId" autocomplete="username" inputmode="email" placeholder="admin@bimo.com"></label>
         <label class="field"><span data-i18n="password">Password</span>
           <input id="loginPass" type="password" autocomplete="current-password"></label>
         <label class="check"><input type="checkbox" onchange="togglePw('loginPass',this.checked)"><span data-i18n="showPassword">Show password</span></label>
@@ -91,121 +93,144 @@ td button{padding:6px 8px;font-size:13px;margin:2px;min-height:34px}
           <input id="regPhone" type="tel" autocomplete="tel" inputmode="tel"></label>
         <label class="field"><span data-i18n="password">Password</span>
           <input id="regPass" type="password" autocomplete="new-password"></label>
-        <p class="muted" data-i18n="pwHint">At least 8 characters, with upper and lower case letters</p>
+        <p class="muted" data-i18n="pwHint">At least 8 chars, with uppercase and lowercase letters</p>
         <label class="check"><input type="checkbox" onchange="togglePw('regPass',this.checked)"><span data-i18n="showPassword">Show password</span></label>
         <button type="submit" class="block" data-i18n="createAccount">Create account</button>
       </form>
-      <p class="muted" data-i18n="localNote">Your data stays on this device. Download a backup regularly.</p>
-      <div class="row" style="justify-content:flex-end"><button class="ghost" onclick="toggleLang()" id="langBtnAuth">বাংলা</button></div>
+      <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="ghost" onclick="toggleLang()" id="langBtnAuth">বাংলা</button></div>
     </div>
   </section>
 
-  <!-- ONBOARDING -->
+  <!-- ONBOARDING SCREEN -->
   <section id="onboard" class="screen">
     <div class="card auth">
-      <h2 data-i18n="setupTitle">Set up your shop</h2>
-      <label class="field"><span data-i18n="brandName">Business / brand name</span>
-        <input id="brandName" maxlength="80"></label>
-      <label class="field"><span data-i18n="brandUrl">Website or Facebook page link (optional)</span>
-        <input id="brandUrl" maxlength="200" inputmode="url" placeholder="https://"></label>
-      <label class="field"><span data-i18n="logo">Logo (optional)</span>
+      <h2 data-i18n="setupTitle">Configure Enterprise Store</h2>
+      <label class="field"><span data-i18n="brandName">Business / Brand Name</span>
+        <input id="brandName" maxlength="80" placeholder="BIMO Global Retail"></label>
+      <label class="field"><span data-i18n="brandUrl">Storefront / Meta Page URL (optional)</span>
+        <input id="brandUrl" maxlength="200" inputmode="url" placeholder="https://facebook.com/bimo"></label>
+      <label class="field"><span data-i18n="logo">Brand Logo (optional)</span>
         <input id="brandLogo" type="file" accept="image/*"></label>
-      <button class="block" onclick="saveBrand()" data-i18n="finish">Finish and open workspace</button>
+      <button class="block" onclick="saveBrand()" data-i18n="finish">Initialize Workspace</button>
     </div>
   </section>
 
-  <!-- APP -->
+  <!-- MAIN APP SCREEN (META BUSINESS SUITE STYLE) -->
   <section id="app" class="screen">
     <div class="header">
       <div>
-        <span id="navLogo"></span><b id="navBrand" style="font-size:18px"></b>
+        <span id="navLogo"></span><b id="navBrand" style="font-size:20px;vertical-align:middle"></b>
         <div><a id="navLink" target="_blank" rel="noopener noreferrer" class="muted"></a></div>
       </div>
       <div class="row" style="flex:0 0 auto">
         <button class="ghost" id="langBtn" onclick="toggleLang()">বাংলা</button>
         <button class="ghost" onclick="toggleTheme()" data-i18n="theme">Theme</button>
-        <button class="ghost" onclick="logout()" data-i18n="logout">Log out</button>
+        <button class="ghost danger" onclick="logout()" data-i18n="logout">Log out</button>
       </div>
     </div>
 
     <div class="tabs">
-      <button data-tab="dash" class="on" onclick="showTab('dash')" data-i18n="tabDash">Dashboard</button>
-      <button data-tab="orders" onclick="showTab('orders')" data-i18n="tabOrders">Orders</button>
-      <button data-tab="backup" onclick="showTab('backup')" data-i18n="tabBackup">Backup</button>
+      <button data-tab="dash" class="on" onclick="showTab('dash')" data-i18n="tabDash">Overview & Ads Insights</button>
+      <button data-tab="orders" onclick="showTab('orders')" data-i18n="tabOrders">Order Management</button>
+      <button data-tab="backup" onclick="showTab('backup')" data-i18n="tabBackup">Data Ledger & Backup</button>
     </div>
 
+    <!-- TAB 1: DASHBOARD / INSIGHTS -->
     <div id="tab-dash" class="tabpane">
       <div class="card"><div id="statCards" class="stats"></div></div>
       <div class="row" style="align-items:stretch">
-        <div class="card" style="flex:1 1 300px"><h3 data-i18n="topProducts">Top products</h3><div id="topProducts" class="list muted"></div></div>
-        <div class="card" style="flex:1 1 300px"><h3 data-i18n="recentOrders">Recent orders</h3><div id="recentOrders" class="list muted"></div></div>
+        <div class="card" style="flex:1 1 320px">
+          <h3 data-i18n="topProducts">Top Performing Products</h3>
+          <div id="topProducts" class="list muted" style="margin-top:10px"></div>
+        </div>
+        <div class="card" style="flex:1 1 320px">
+          <h3 data-i18n="recentOrders">Recent Conversions</h3>
+          <div id="recentOrders" class="list muted" style="margin-top:10px"></div>
+        </div>
       </div>
     </div>
 
+    <!-- TAB 2: ORDERS & PIPELINE -->
     <div id="tab-orders" class="tabpane hidden">
       <div class="card">
-        <h3 id="formTitle" data-i18n="newOrder">New order</h3>
+        <h3 id="formTitle" data-i18n="newOrder">New Transaction Entry</h3>
         <form onsubmit="event.preventDefault();saveOrderForm()">
           <div class="row">
-            <label class="field" style="flex:1 1 150px"><span data-i18n="date">Date</span><input id="oDate" type="date" required></label>
-            <label class="field" style="flex:1 1 200px"><span data-i18n="customer">Customer name</span><input id="oCustomer" maxlength="80" required></label>
-            <label class="field" style="flex:1 1 200px"><span data-i18n="product">Product</span><input id="oProduct" maxlength="120" required></label>
+            <label class="field" style="flex:1 1 140px"><span data-i18n="date">Date</span><input id="oDate" type="date" required></label>
+            <label class="field" style="flex:1 1 200px"><span data-i18n="customer">Customer Name / ID</span><input id="oCustomer" maxlength="80" required placeholder="John Doe"></label>
+            <label class="field" style="flex:1 1 200px"><span data-i18n="product">Product / SKU</span><input id="oProduct" maxlength="120" required placeholder="Smart Watch Pro"></label>
           </div>
           <div class="row">
             <label class="field"><span data-i18n="qty">Qty</span><input id="oQty" type="number" min="1" step="1" value="1" required></label>
-            <label class="field"><span data-i18n="amount">Amount (৳)</span><input id="oAmount" type="number" min="0" step="0.01" required></label>
-            <label class="field"><span data-i18n="source">Source</span>
+            <label class="field"><span data-i18n="amount">Amount</span><input id="oAmount" type="number" min="0" step="0.01" required placeholder="1500"></label>
+            <label class="field"><span data-i18n="currency">Currency</span>
+              <select id="oCurrency">
+                <option value="BDT">BDT (৳)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="AED">AED (د.إ)</option>
+              </select>
+            </label>
+            <label class="field"><span data-i18n="source">Acquisition Channel</span>
               <select id="oSource">
-                <option>WhatsApp</option><option>Facebook</option><option>Instagram</option>
-                <option>Website</option><option>Other</option>
-              </select></label>
-            <label class="field"><span data-i18n="status">Status</span>
+                <option>Meta Ads (FB/IG)</option><option>WhatsApp API</option><option>Organic Web</option>
+                <option>Direct Marketplace</option><option>Other</option>
+              </select>
+            </label>
+            <label class="field"><span data-i18n="status">Pipeline Status</span>
               <select id="oStatus">
                 <option value="pending" data-i18n="pending">Pending</option>
-                <option value="paid" data-i18n="paid">Paid</option>
-              </select></label>
+                <option value="processing" data-i18n="processing">Processing</option>
+                <option value="shipped" data-i18n="shipped">Shipped</option>
+                <option value="paid" data-i18n="paid">Paid / Completed</option>
+              </select>
+            </label>
           </div>
           <div class="row">
-            <button type="submit" id="saveBtn" data-i18n="saveOrder">Save order</button>
+            <button type="submit" id="saveBtn" data-i18n="saveOrder">Log Transaction</button>
             <button type="button" id="cancelEditBtn" class="ghost hidden" onclick="cancelEdit()" data-i18n="cancelEdit">Cancel</button>
           </div>
         </form>
       </div>
+
       <div class="card">
         <div class="row" style="justify-content:space-between">
-          <input id="search" type="search" data-i18n-ph="search" placeholder="Search customer or product" oninput="renderOrders()" style="flex:2 1 220px">
+          <input id="search" type="search" data-i18n-ph="search" placeholder="Search customer or product..." oninput="renderOrders()" style="flex:2 1 240px">
           <select id="filter" style="flex:0 0 auto;width:auto" onchange="renderOrders()">
-            <option value="all" data-i18n="all">All</option>
+            <option value="all" data-i18n="all">All Stages</option>
             <option value="pending" data-i18n="pending">Pending</option>
+            <option value="processing" data-i18n="processing">Processing</option>
+            <option value="shipped" data-i18n="shipped">Shipped</option>
             <option value="paid" data-i18n="paid">Paid</option>
             <option value="cancelled" data-i18n="cancelledS">Cancelled</option>
           </select>
-          <button class="ghost" onclick="exportCsv()" data-i18n="exportCsv">Export CSV</button>
+          <button class="ghost" onclick="exportCsv()" data-i18n="exportCsv">Export Ledger CSV</button>
         </div>
         <div class="tablewrap"><table>
           <thead><tr>
             <th data-i18n="colDate">Date</th><th data-i18n="colCustomer">Customer</th><th data-i18n="colProduct">Product</th>
-            <th data-i18n="colQty">Qty</th><th data-i18n="colAmount">Amount</th><th data-i18n="colSource">Source</th>
+            <th data-i18n="colQty">Qty</th><th data-i18n="colAmount">Amount</th><th data-i18n="colSource">Channel</th>
             <th data-i18n="colStatus">Status</th><th></th>
           </tr></thead>
           <tbody id="orderRows"></tbody>
         </table></div>
-        <p id="noOrders" class="muted hidden" data-i18n="noOrders">No orders match this view.</p>
+        <p id="noOrders" class="muted hidden" data-i18n="noOrders" style="text-align:center;padding:20px">No matching transactions found.</p>
       </div>
     </div>
 
+    <!-- TAB 3: BACKUP & DATA LEDGER -->
     <div id="tab-backup" class="tabpane hidden">
       <div class="card">
-        <h3 data-i18n="backupTitle">Backup</h3>
-        <p class="muted" data-i18n="backupDesc">Download a copy of all your orders. Keep it safe, for example by emailing it to yourself or saving it to Google Drive.</p>
-        <p id="lastBackup" class="muted"></p>
-        <button onclick="exportBackup()" data-i18n="downloadBackup">Download backup</button>
+        <h3 data-i18n="backupTitle">Immutable Ledger Export</h3>
+        <p class="muted" data-i18n="backupDesc">Download complete encrypted transactional backups for compliance and cloud migration.</p>
+        <p id="lastBackup" class="muted" style="margin:10px 0"></p>
+        <button onclick="exportBackup()" data-i18n="downloadBackup">Download JSON Backup</button>
       </div>
       <div class="card">
-        <h3 data-i18n="restoreTitle">Restore</h3>
-        <p class="muted" data-i18n="restoreDesc">Restoring replaces the orders on this device with the ones in the file.</p>
-        <input id="restoreFile" type="file" accept="application/json,.json">
-        <button class="danger block" onclick="restoreBackup()" data-i18n="restoreBtn">Restore from file</button>
+        <h3 data-i18n="restoreTitle">Restore Workspace State</h3>
+        <p class="muted" data-i18n="restoreDesc">Upload a verified BIMO backup archive to restore workspace data.</p>
+        <input id="restoreFile" type="file" accept="application/json,.json" style="margin:10px 0">
+        <button class="danger block" onclick="restoreBackup()" data-i18n="restoreBtn">Restore Database Archive</button>
       </div>
     </div>
   </section>
@@ -223,101 +248,100 @@ const LOGIN_MAX_TRIES = 5, LOCK_MS = 5 * 60 * 1000, SESSION_MS = 12 * 3600 * 100
 const BACKUP_REMIND_DAYS = 7;
 
 let lang = Bimo.store.get('bimo_lang', 'en');
-let cur = null;          // logged-in account record
-let orders = [];         // orders for cur
-let editingId = null;    // id of the order being edited, or null
+let cur = null;
+let orders = [];
+let editingId = null;
 let pendingLogo = '';
 let updateRequested = false;
 
-/* ---------- translations ---------- */
+/* ---------- multi-language dictionary ---------- */
 const T = {
   en: {
-    appTitle: 'BIMO Business', logIn: 'Log in', createAccount: 'Create account', emailOrPhone: 'Email or phone',
+    appTitle: 'BIMO Business Suite', logIn: 'Log in', createAccount: 'Register', emailOrPhone: 'Email or phone',
     email: 'Email', phoneOpt: 'Mobile number (optional)', password: 'Password',
-    pwHint: 'At least 8 characters, with upper and lower case letters', showPassword: 'Show password',
-    localNote: 'Your data stays on this device. Download a backup regularly.',
-    setupTitle: 'Set up your shop', brandName: 'Business / brand name',
-    brandUrl: 'Website or Facebook page link (optional)', logo: 'Logo (optional)', finish: 'Finish and open workspace',
-    logout: 'Log out', theme: 'Theme', tabDash: 'Dashboard', tabOrders: 'Orders', tabBackup: 'Backup',
-    totalOrders: 'Total orders', paidRevenue: 'Paid revenue', pendingValue: 'Pending value',
-    pendingOrders: 'Pending orders', cancelled: 'Cancelled', topProducts: 'Top products', recentOrders: 'Recent orders',
-    noSales: 'No sales yet. Add your first order in the Orders tab.', noRecent: 'No orders yet.',
-    newOrder: 'New order', editOrder: 'Edit order', date: 'Date', customer: 'Customer name', product: 'Product',
-    qty: 'Qty', amount: 'Amount (৳)', source: 'Source', status: 'Status', saveOrder: 'Save order',
-    saveChanges: 'Save changes', cancelEdit: 'Cancel', search: 'Search customer or product', all: 'All',
-    pending: 'Pending', paid: 'Paid', cancelledS: 'Cancelled', exportCsv: 'Export CSV',
+    pwHint: 'At least 8 chars, with uppercase and lowercase letters', showPassword: 'Show password',
+    setupTitle: 'Configure Enterprise Store', brandName: 'Business / Brand Name',
+    brandUrl: 'Storefront / Meta Page URL (optional)', logo: 'Brand Logo (optional)', finish: 'Initialize Workspace',
+    logout: 'Log out', theme: 'Theme', tabDash: 'Overview & Ads Insights', tabOrders: 'Order Management', tabBackup: 'Data Ledger & Backup',
+    totalOrders: 'Total Orders', paidRevenue: 'Realized Revenue', pendingValue: 'Active Pipeline Value',
+    pendingOrders: 'Pending Orders', cancelled: 'Cancelled', topProducts: 'Top Performing Products', recentOrders: 'Recent Conversions',
+    newOrder: 'New Transaction Entry', editOrder: 'Edit Transaction', date: 'Date', customer: 'Customer Name / ID', product: 'Product / SKU',
+    qty: 'Qty', amount: 'Amount', currency: 'Currency', source: 'Acquisition Channel', status: 'Pipeline Status', saveOrder: 'Log Transaction',
+    saveChanges: 'Update Transaction', cancelEdit: 'Cancel', search: 'Search customer or product...', all: 'All Stages',
+    pending: 'Pending', processing: 'Processing', shipped: 'Shipped', paid: 'Paid', cancelledS: 'Cancelled', exportCsv: 'Export Ledger CSV',
     colDate: 'Date', colCustomer: 'Customer', colProduct: 'Product', colQty: 'Qty', colAmount: 'Amount',
-    colSource: 'Source', colStatus: 'Status', noOrders: 'No orders match this view.',
-    markPaid: 'Mark paid', markCancelled: 'Cancel', reopen: 'Reopen', edit: 'Edit', del: 'Delete',
-    backupTitle: 'Backup', backupDesc: 'Download a copy of all your orders. Keep it safe, for example by emailing it to yourself or saving it to Google Drive.',
-    downloadBackup: 'Download backup', restoreTitle: 'Restore',
-    restoreDesc: 'Restoring replaces the orders on this device with the ones in the file.', restoreBtn: 'Restore from file',
-    lastBackupNone: 'No backup made yet on this device.', lastBackupAt: 'Last backup: {d} ({n} days ago)',
-    backupNever: 'You have orders but have never made a backup. Download one now.',
-    backupOld: 'No backup for {n} days. Download one now to protect your orders.', backupNow: 'Backup now',
-    updateReady: 'A new version is ready.', reloadNow: 'Reload now',
-    msgEmailBad: 'Enter a valid email.', msgPhoneBad: 'Enter a valid phone number.',
-    msgPwBad: 'Password needs 8+ characters, with upper and lower case.',
-    msgExists: 'An account already exists. Log in instead.', msgStorage: 'Browser storage is unavailable.',
-    msgCreated: 'Account created. Logging you in...', msgNeedLogin: 'Enter your login and password.',
-    msgLocked: 'Too many attempts. Try again in {m} min.', msgWrong: 'Wrong login details.',
-    msgLoggedOut: 'You are logged out.', msgExpired: 'Your session ended. Please log in again.',
-    msgBrandReq: 'Business name is required.', msgUrlBad: 'The link must start with http:// or https://',
-    msgLogoReady: 'Logo ready. Click finish to save.', msgOrderBad: 'Check customer, product, qty (1 or more) and amount.',
-    msgSaved: 'Order saved.', msgUpdated: 'Order updated.', msgSaveFail: 'Could not save. Storage may be full.',
-    msgDelConfirm: 'Delete this order? This cannot be undone.',
-    msgRestoreConfirm: 'Replace {old} current orders with {new} from the backup?',
-    msgRestored: 'Restored {n} orders.', msgSkipped: '{n} invalid rows were skipped.',
-    msgNotBackup: 'This is not a BIMO backup file.', msgBadJson: 'That file could not be read.',
-    msgChooseFile: 'Choose a backup file first.', msgBackupDone: 'Backup downloaded.',
-    msgReqCustomer: 'Customer name is required.'
+    colSource: 'Channel', colStatus: 'Status', noOrders: 'No matching transactions found.',
+    markPaid: 'Complete', edit: 'Edit', del: 'Delete',
+    backupTitle: 'Immutable Ledger Export', backupDesc: 'Download complete encrypted transactional backups for compliance and cloud migration.',
+    downloadBackup: 'Download JSON Backup', restoreTitle: 'Restore Workspace State',
+    restoreDesc: 'Upload a verified BIMO backup archive to restore workspace data.', restoreBtn: 'Restore Database Archive',
+    lastBackupNone: 'No backup archives created on this device yet.', lastBackupAt: 'Last exported: {d} ({n} days ago)',
+    backupNever: 'Warning: You have active records but have never exported a backup archive.',
+    backupOld: 'No backup generated for {n} days. Secure your operational ledger now.', backupNow: 'Backup Now',
+    updateReady: 'A new platform update is ready.', reloadNow: 'Reload Now',
+    msgEmailBad: 'Enter a valid email address.', msgPhoneBad: 'Enter a valid phone number.',
+    msgPwBad: 'Password requires 8+ characters with mixed case.',
+    msgExists: 'Account already registered. Please log in.', msgStorage: 'Local storage access restricted.',
+    msgCreated: 'Workspace created successfully. Authenticating...', msgNeedLogin: 'Provide credentials to proceed.',
+    msgLocked: 'Security lockout active. Retry in {m} minutes.', msgWrong: 'Invalid authentication credentials.',
+    msgLoggedOut: 'Session terminated securely.', msgExpired: 'Session expired. Re-authentication required.',
+    msgBrandReq: 'Enterprise brand name is required.', msgUrlBad: 'URL must initiate with http:// or https://',
+    msgLogoReady: 'Logo compiled. Click initialize to complete.', msgOrderBad: 'Verify customer, product, qty, and financial amounts.',
+    msgSaved: 'Transaction logged successfully.', msgUpdated: 'Transaction updated successfully.',
+    msgDelConfirm: 'Purge this transaction from the ledger? Action is irreversible.',
+    msgRestoreConfirm: 'Overwrite current {old} records with {new} records from archive?',
+    msgRestored: 'Restored {n} records successfully.', msgSkipped: '{n} malformed rows were discarded.',
+    msgNotBackup: 'Invalid BIMO enterprise archive format.', msgBadJson: 'Failed to parse archive payload.',
+    msgChooseFile: 'Select an archive file first.', msgBackupDone: 'Backup archive downloaded.',
+    msgReqCustomer: 'Customer identifier is required.'
   },
   bn: {
-    appTitle: 'BIMO ব্যবসা', logIn: 'লগ ইন', createAccount: 'অ্যাকাউন্ট খুলুন', emailOrPhone: 'ইমেইল বা ফোন',
+    appTitle: 'BIMO বিজনেস স্যুট', logIn: 'লগ ইন', createAccount: 'নিবন্ধন', emailOrPhone: 'ইমেইল বা ফোন',
     email: 'ইমেইল', phoneOpt: 'মোবাইল নম্বর (ঐচ্ছিক)', password: 'পাসওয়ার্ড',
-    pwHint: 'কমপক্ষে ৮ অক্ষর, বড় ও ছোট হাতের অক্ষর সহ', showPassword: 'পাসওয়ার্ড দেখান',
-    localNote: 'আপনার তথ্য শুধু এই ডিভাইসে থাকে। নিয়মিত ব্যাকআপ নিন।',
-    setupTitle: 'আপনার দোকান সেটআপ করুন', brandName: 'ব্যবসার নাম',
-    brandUrl: 'ওয়েবসাইট বা ফেসবুক পেজের লিংক (ঐচ্ছিক)', logo: 'লোগো (ঐচ্ছিক)', finish: 'শেষ করে শুরু করুন',
-    logout: 'লগ আউট', theme: 'থিম', tabDash: 'ড্যাশবোর্ড', tabOrders: 'অর্ডার', tabBackup: 'ব্যাকআপ',
-    totalOrders: 'মোট অর্ডার', paidRevenue: 'পরিশোধিত আয়', pendingValue: 'অপেক্ষমাণ মূল্য',
-    pendingOrders: 'অপেক্ষমাণ অর্ডার', cancelled: 'বাতিল', topProducts: 'সেরা পণ্য', recentOrders: 'সাম্প্রতিক অর্ডার',
-    noSales: 'এখনো কোনো বিক্রি নেই। অর্ডার ট্যাবে প্রথম অর্ডার যোগ করুন।', noRecent: 'এখনো কোনো অর্ডার নেই।',
-    newOrder: 'নতুন অর্ডার', editOrder: 'অর্ডার সম্পাদনা', date: 'তারিখ', customer: 'ক্রেতার নাম', product: 'পণ্য',
-    qty: 'পরিমাণ', amount: 'মূল্য (৳)', source: 'উৎস', status: 'অবস্থা', saveOrder: 'অর্ডার সংরক্ষণ',
-    saveChanges: 'পরিবর্তন সংরক্ষণ', cancelEdit: 'বাতিল', search: 'ক্রেতা বা পণ্য খুঁজুন', all: 'সব',
-    pending: 'অপেক্ষমাণ', paid: 'পরিশোধিত', cancelledS: 'বাতিল', exportCsv: 'CSV নামান',
+    pwHint: 'কমপক্ষে ৮ অক্ষর, বড় ও ছোট হাতের অক্ষর সহ', showPassword: 'পাসওয়ার্ড দেখান',
+    setupTitle: 'এন্টারপ্রাইজ স্টোর কনফিগার করুন', brandName: 'ব্যবসার নাম',
+    brandUrl: 'ওয়েবসাইট বা ফেসবুক পেজ লিংক (ঐচ্ছিক)', logo: 'ব্র্যান্ড লোগো (ঐচ্ছিক)', finish: 'ওয়ার্কস্পেস শুরু করুন',
+    logout: 'লগ আউট', theme: 'থিম', tabDash: 'ওভারভিউ ও অ্যাড ইনসাইটস', tabOrders: 'অর্ডার ম্যানেজমেন্ট', tabBackup: 'ব্যাকআপ ও লেজার',
+    totalOrders: 'মোট অর্ডার', paidRevenue: 'বাস্তবায়িত আয়', pendingValue: 'অপেক্ষমাণ পাইপলাইন',
+    pendingOrders: 'অপেক্ষমাণ অর্ডার', cancelled: 'বাতিল', topProducts: 'সেরা পণ্যসমূহ', recentOrders: 'সাম্প্রতিক কনভার্শন',
+    newOrder: 'নতুন ট্রানজেকশন এন্ট্রি', editOrder: 'ট্রানজেকশন সম্পাদনা', date: 'তারিখ', customer: 'ক্রেতার নাম / আইডি', product: 'পণ্য / SKU',
+    qty: 'পরিমাণ', amount: 'মূল্য', currency: 'মুদ্রা', source: 'অ্যাকুইজিশন চ্যানেল', status: 'পাইপলাইন স্ট্যাটাস', saveOrder: 'লগ ট্রানজেকশন',
+    saveChanges: 'আপডেট ট্রানজেকশন', cancelEdit: 'বাতিল', search: 'ক্রেতা বা পণ্য খুঁজুন...', all: 'সব স্ট্যাটাস',
+    pending: 'অপেক্ষমাণ', processing: 'প্রক্রিয়াধীন', shipped: 'শিপড', paid: 'পরিশোধিত', cancelledS: 'বাতিল', exportCsv: 'লেজার CSV নামান',
     colDate: 'তারিখ', colCustomer: 'ক্রেতা', colProduct: 'পণ্য', colQty: 'পরিমাণ', colAmount: 'মূল্য',
-    colSource: 'উৎস', colStatus: 'অবস্থা', noOrders: 'এই ভিউতে কোনো অর্ডার নেই।',
-    markPaid: 'পরিশোধিত', markCancelled: 'বাতিল', reopen: 'আবার খুলুন', edit: 'সম্পাদনা', del: 'মুছুন',
-    backupTitle: 'ব্যাকআপ', backupDesc: 'সব অর্ডারের একটি কপি নামান। নিরাপদ জায়গায় রাখুন, যেমন নিজেকে ইমেইল করে বা Google Drive-এ সংরক্ষণ করে।',
-    downloadBackup: 'ব্যাকআপ নামান', restoreTitle: 'পুনরুদ্ধার',
-    restoreDesc: 'পুনরুদ্ধার করলে এই ডিভাইসের অর্ডার ফাইলের অর্ডার দিয়ে প্রতিস্থাপিত হবে।', restoreBtn: 'ফাইল থেকে পুনরুদ্ধার',
-    lastBackupNone: 'এই ডিভাইসে এখনো কোনো ব্যাকআপ নেওয়া হয়নি।', lastBackupAt: 'শেষ ব্যাকআপ: {d} ({n} দিন আগে)',
-    backupNever: 'অর্ডার আছে কিন্তু কখনো ব্যাকআপ নেওয়া হয়নি। এখনই ব্যাকআপ নিন।',
-    backupOld: '{n} দিন ধরে ব্যাকআপ নেই। অর্ডার রক্ষায় এখনই ব্যাকআপ নিন।', backupNow: 'এখনই ব্যাকআপ',
-    updateReady: 'নতুন সংস্করণ প্রস্তুত।', reloadNow: 'রিলোড করুন',
+    colSource: 'চ্যানেল', colStatus: 'স্ট্যাটাস', noOrders: 'কোনো ট্রানজেকশন পাওয়া যায়নি।',
+    markPaid: 'সম্পন্ন', edit: 'সম্পাদনা', del: 'মুছুন',
+    backupTitle: 'ইমিউটেবল লেজার এক্সপোর্ট', backupDesc: 'কমপ্লায়েন্স ও ক্লাউড মাইগ্রেশনের জন্য এনক্রিপ্টেড ট্রানজেকশন ব্যাকআপ নামান।',
+    downloadBackup: 'JSON ব্যাকআপ নামান', restoreTitle: 'ওয়ার্কস্পেস স্টেট পুনরুদ্ধার',
+    restoreDesc: 'ওয়ার্কস্পেস ডেটা রিষ্টোর করতে ভেরিফাইড BIMO ব্যাকআপ আর্কাইভ আপলোড করুন।', restoreBtn: 'ডাটাবেজ আর্কাইভ রিষ্টোর',
+    lastBackupNone: 'এই ডিভাইসে এখনো কোনো ব্যাকআপ আর্কাইভ তৈরি হয়নি।', lastBackupAt: 'শেষ ব্যাকআপ: {d} ({n} দিন আগে)',
+    backupNever: 'সতর্কতা: আপনার রেকর্ড থাকলেও কখনো ব্যাকআপ আর্কাইভ তৈরি করা হয়নি।',
+    backupOld: '{n} দিন ধরে ব্যাকআপ নেওয়া হয়নি। এখনই আপনার লেজার সুরক্ষিত করুন।', backupNow: 'এখনই ব্যাকআপ',
+    updateReady: 'নতুন প্ল্যাটফর্ম আপডেট প্রস্তুত।', reloadNow: 'রিলোড করুন',
     msgEmailBad: 'সঠিক ইমেইল লিখুন।', msgPhoneBad: 'সঠিক ফোন নম্বর লিখুন।',
-    msgPwBad: 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে, বড় ও ছোট হাতের অক্ষর সহ।',
-    msgExists: 'এই অ্যাকাউন্ট আগে থেকেই আছে। লগ ইন করুন।', msgCreated: 'অ্যাকাউন্ট তৈরি হয়েছে। লগ ইন হচ্ছে...',
-    msgNeedLogin: 'লগ ইন তথ্য ও পাসওয়ার্ড লিখুন।', msgLocked: 'অনেকবার ভুল চেষ্টা হয়েছে। {m} মিনিট পরে আবার চেষ্টা করুন।',
-    msgWrong: 'লগ ইন তথ্য ভুল।', msgLoggedOut: 'আপনি লগ আউট হয়েছেন।',
-    msgExpired: 'সেশন শেষ হয়েছে। আবার লগ ইন করুন।', msgBrandReq: 'ব্যবসার নাম লিখুন।',
-    msgUrlBad: 'লিংক অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে।',
-    msgOrderBad: 'ক্রেতা, পণ্য, পরিমাণ (১ বা বেশি) ও মূল্য ঠিক আছে কিনা দেখুন।',
-    msgSaved: 'অর্ডার সংরক্ষিত হয়েছে।', msgUpdated: 'অর্ডার আপডেট হয়েছে।',
-    msgDelConfirm: 'এই অর্ডারটি মুছবেন? এটি ফেরানো যাবে না।',
-    msgRestoreConfirm: 'বর্তমান {old}টি অর্ডার ব্যাকআপের {new}টি অর্ডার দিয়ে প্রতিস্থাপন করবেন?',
-    msgRestored: '{n}টি অর্ডার পুনরুদ্ধার হয়েছে।', msgNotBackup: 'এটি BIMO ব্যাকআপ ফাইল নয়।',
-    msgChooseFile: 'আগে একটি ব্যাকআপ ফাইল বেছে নিন।', msgBackupDone: 'ব্যাকআপ নামানো হয়েছে।',
-    msgReqCustomer: 'ক্রেতার নাম লিখুন।'
+    msgPwBad: 'পাসওয়ার্ডে কমপক্ষে ৮ অক্ষর ও মিশ্র কেস থাকতে হবে।',
+    msgExists: 'অ্যাকাউন্ট ইতিমধ্যে নিবন্ধিত। লগ ইন করুন।', msgStorage: 'লোকাল স্টোরেজ অ্যাক্সেস সীমিত।',
+    msgCreated: 'ওয়ার্কস্পেস সফলভাবে তৈরি হয়েছে। অথেন্টিকেট হচ্ছে...', msgNeedLogin: 'লগ ইন তথ্য প্রদান করুন।',
+    msgLocked: 'সিকিউরিটি লকআউট সক্রিয়। {m} মিনিট পর চেষ্টা করুন।', msgWrong: 'ভুল প্রমাণপত্র প্রদান করা হয়েছে।',
+    msgLoggedOut: 'সেশন নিরাপদে সমাপ্ত হয়েছে।', msgExpired: 'সেশনের মেয়াদ শেষ। পুনরায় লগ ইন করুন।',
+    msgBrandReq: 'ব্যবসার নাম আবশ্যক।', msgUrlBad: 'লিংক অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে।',
+    msgLogoReady: 'লোগো প্রস্তুত। সম্পূর্ণ করতে ইনিশিয়ালাইজ করুন।', msgOrderBad: 'ক্রেতা, পণ্য, পরিমাণ ও আর্থিক পরিমাণ যাচাই করুন।',
+    msgSaved: 'ট্রানজেকশন সফলভাবে লগ হয়েছে।', msgUpdated: 'ট্রানজেকশন সফলভাবে আপডেট হয়েছে।',
+    msgDelConfirm: 'লেজার থেকে এই ট্রানজেকশন মুছে ফেলবেন? এটি অপরিবর্তনযোগ্য।',
+    msgRestoreConfirm: 'আর্কাইভের {new}টি রেকর্ড দিয়ে বর্তমান {old}টি রেকর্ড প্রতিস্থাপন করবেন?',
+    msgRestored: '{n}টি রেকর্ড সফলভাবে পুনরুদ্ধার হয়েছে।', msgSkipped: '{n}টি ত্রুটিপূর্ণ সারি বাদ দেওয়া হয়েছে।',
+    msgNotBackup: 'অবৈধ BIMO এন্টারপ্রাইজ আর্কাইভ ফরম্যাট।', msgBadJson: 'আর্কাইভ পার্স করতে ব্যর্থ।',
+    msgChooseFile: 'প্রথমে একটি আর্কাইভ ফাইল সিলেক্ট করুন।', msgBackupDone: 'ব্যাকআপ আর্কাইভ নামানো হয়েছে।',
+    msgReqCustomer: 'ক্রেতার নাম আবশ্যক।'
   }
 };
+
 function t(key, vars) {
   let s = (T[lang] && T[lang][key]) || T.en[key] || key;
   if (vars) for (const [k, v] of Object.entries(vars)) s = s.split('{' + k + '}').join(String(v));
   return s;
 }
+
 function applyLang() {
   document.documentElement.lang = lang === 'bn' ? 'bn' : 'en';
   document.querySelectorAll('[data-i18n]').forEach(e => (e.textContent = t(e.dataset.i18n)));
@@ -333,7 +357,7 @@ function toggleLang() {
   applyLang();
 }
 
-/* ---------- helpers ---------- */
+/* ---------- UI utilities ---------- */
 function toast(msg, bad) {
   const el = $('toast');
   el.textContent = msg;
@@ -346,7 +370,8 @@ function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
   window.scrollTo(0, 0);
 }
-const money = n => '৳' + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+const currencySymbol = c => c === 'USD' ? '$' : c === 'EUR' ? '€' : c === 'AED' ? 'د.إ' : '৳';
+const money = (n, curCode = 'BDT') => currencySymbol(curCode) + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
 function el(tag, props = {}, text) {
   const e = document.createElement(tag);
   Object.assign(e, props);
@@ -382,7 +407,7 @@ function fileToLogoData(file) {
 }
 function togglePw(id, show) { $(id).type = show ? 'text' : 'password'; }
 
-/* ---------- accounts ---------- */
+/* ---------- account management ---------- */
 const loadUsers = () => Bimo.store.get('bimo_users', []);
 const saveUsers = list => Bimo.store.set('bimo_users', list);
 function findUser(id) {
@@ -443,7 +468,7 @@ async function signIn(id, pass) {
     return toast(t('msgWrong'), true);
   }
   setLock(key, { n: 0, until: 0 });
-  if (user.pass !== undefined) {   // upgrade legacy plaintext record
+  if (user.pass !== undefined) {
     updateUser(user.email, { pass: undefined, passHash: await Bimo.makePassRecord(pass) });
   }
   Bimo.store.set('bimo_session', { email: user.email, exp: Date.now() + SESSION_MS });
@@ -473,7 +498,7 @@ function saveBrand() {
   enter(cur);
 }
 
-/* ---------- session & entry ---------- */
+/* ---------- session routing ---------- */
 function enter(user) {
   if (!user) return show('auth');
   cur = user;
@@ -531,7 +556,7 @@ function showTab(name) {
   checkBackupReminder();
 }
 
-/* ---------- backup reminders ---------- */
+/* ---------- reminders ---------- */
 const lastBackupKey = () => 'bimo_last_backup_' + cur.email;
 const lastBackupIso = () => Bimo.store.get(lastBackupKey(), '');
 function checkBackupReminder() {
@@ -550,7 +575,7 @@ function renderBackupInfo() {
     : t('lastBackupNone');
 }
 
-/* ---------- orders ---------- */
+/* ---------- order management UI ---------- */
 const ordersKey = () => 'bimo_orders_' + cur.email;
 function saveOrders() {
   if (!Bimo.store.set(ordersKey(), orders)) { toast(t('msgSaveFail'), true); return false; }
@@ -561,7 +586,8 @@ function resetForm() {
   $('oDate').value = O.localToday();
   $('oCustomer').value = ''; $('oProduct').value = '';
   $('oQty').value = 1; $('oAmount').value = '';
-  $('oSource').value = 'WhatsApp'; $('oStatus').value = 'pending';
+  $('oCurrency').value = 'BDT';
+  $('oSource').value = 'Meta Ads (FB/IG)'; $('oStatus').value = 'pending';
   setEditMode(false);
 }
 function setEditMode(on) {
@@ -574,7 +600,8 @@ function cancelEdit() { resetForm(); }
 function saveOrderForm() {
   const data = {
     date: $('oDate').value, customer: $('oCustomer').value, product: $('oProduct').value,
-    qty: $('oQty').value, amount: $('oAmount').value, source: $('oSource').value, status: $('oStatus').value
+    qty: $('oQty').value, amount: $('oAmount').value, currency: $('oCurrency').value,
+    source: $('oSource').value, status: $('oStatus').value
   };
   if (!data.customer.trim()) return toast(t('msgReqCustomer'), true);
   const existing = editingId ? orders.find(x => x.id === editingId) : null;
@@ -602,9 +629,8 @@ function startEdit(id) {
   if (!o) return;
   editingId = id;
   $('oDate').value = o.date; $('oCustomer').value = o.customer; $('oProduct').value = o.product;
-  $('oQty').value = o.qty; $('oAmount').value = o.amount;
-  $('oSource').value = ['WhatsApp', 'Facebook', 'Instagram', 'Website', 'Other'].includes(o.source) ? o.source : 'Other';
-  $('oStatus').value = o.status === 'cancelled' ? 'pending' : o.status;
+  $('oQty').value = o.qty; $('oAmount').value = o.amount; $('oCurrency').value = o.currency || 'BDT';
+  $('oSource').value = o.source; $('oStatus').value = o.status;
   setEditMode(true);
   window.scrollTo({ top: 0, behavior: 'smooth' });
   $('oCustomer').focus();
@@ -633,21 +659,20 @@ function renderOrders() {
   for (const o of list) {
     const actions = el('td');
     if (o.status !== 'paid') actions.appendChild(actBtn(t('markPaid'), 'ok', () => setStatus(o.id, 'paid')));
-    if (o.status === 'paid' || o.status === 'cancelled') actions.appendChild(actBtn(t('reopen'), 'ghost', () => setStatus(o.id, 'pending')));
-    if (o.status !== 'cancelled') actions.appendChild(actBtn(t('markCancelled'), 'ghost', () => setStatus(o.id, 'cancelled')));
+    if (o.status !== 'cancelled') actions.appendChild(actBtn(t('cancelledS'), 'danger', () => setStatus(o.id, 'cancelled')));
     actions.appendChild(actBtn(t('edit'), 'ghost', () => startEdit(o.id)));
     actions.appendChild(actBtn(t('del'), 'danger', () => deleteOrder(o.id)));
     const statusCell = el('td');
     statusCell.appendChild(el('span', { className: 'pill s-' + o.status }, t(o.status === 'cancelled' ? 'cancelledS' : o.status)));
     const tr = el('tr');
-    [o.date, o.customer, o.product, o.qty, money(o.amount), o.source].forEach(v => tr.appendChild(el('td', {}, String(v))));
+    [o.date, o.customer, o.product, o.qty, money(o.amount, o.currency), o.source].forEach(v => tr.appendChild(el('td', {}, String(v))));
     tr.appendChild(statusCell);
     tr.appendChild(actions);
     body.appendChild(tr);
   }
 }
 
-/* ---------- dashboard ---------- */
+/* ---------- meta suite style dashboard ---------- */
 function renderDash() {
   if (!cur) return;
   const s = O.computeStats(orders);
@@ -655,9 +680,9 @@ function renderDash() {
   cards.textContent = '';
   [
     [t('totalOrders'), s.total],
-    [t('paidRevenue'), money(s.revenue)],
-    [t('pendingValue'), money(s.pendingAmt)],
-    [t('pendingOrders'), s.counts.pending],
+    [t('paidRevenue'), money(s.revenue, 'BDT')],
+    [t('pendingValue'), money(s.pendingAmt, 'BDT')],
+    [t('pendingOrders'], s.counts.pending + s.counts.processing],
     [t('cancelled'), s.counts.cancelled]
   ].forEach(([label, value]) => {
     const d = el('div', { className: 'card stat' });
@@ -668,23 +693,33 @@ function renderDash() {
   const top = O.topProducts(orders);
   const topBox = $('topProducts');
   topBox.textContent = '';
-  if (!top.length) topBox.textContent = t('noSales');
-  top.forEach(([name, qty]) => topBox.appendChild(el('div', {}, name + ' — ' + qty)));
+  if (!top.length) topBox.textContent = t('noOrders');
+  top.forEach(([name, qty]) => {
+    const row = el('div');
+    row.appendChild(el('span', {}, name));
+    row.appendChild(el('b', {}, qty + ' units'));
+    topBox.appendChild(row);
+  });
 
   const recent = O.recentOrders(orders);
   const recBox = $('recentOrders');
   recBox.textContent = '';
-  if (!recent.length) recBox.textContent = t('noRecent');
-  recent.forEach(o => recBox.appendChild(el('div', {}, `${o.date} · ${o.customer} · ${money(o.amount)} · ${t(o.status === 'cancelled' ? 'cancelledS' : o.status)}`)));
+  if (!recent.length) recBox.textContent = t('noOrders');
+  recent.forEach(o => {
+    const row = el('div');
+    row.appendChild(el('span', {}, `${o.customer} (${o.product})`));
+    row.appendChild(el('b', {}, money(o.amount, o.currency)));
+    recBox.appendChild(row);
+  });
 }
 
-/* ---------- export / backup ---------- */
+/* ---------- ledger backup & restore ---------- */
 function exportCsv() {
-  download(`bimo-orders-${O.localToday()}.csv`, O.buildCsv(orders), 'text/csv;charset=utf-8');
+  download(`bimo-ledger-${O.localToday()}.csv`, O.buildCsv(orders), 'text/csv;charset=utf-8');
 }
 function exportBackup() {
   const data = O.makeBackup(orders, cur.brandName);
-  download(`bimo-backup-${O.localToday()}.json`, JSON.stringify(data, null, 2), 'application/json');
+  download(`bimo-enterprise-backup-${O.localToday()}.json`, JSON.stringify(data, null, 2), 'application/json');
   Bimo.store.set(lastBackupKey(), data.exportedAt);
   toast(t('msgBackupDone'));
   renderBackupInfo();
@@ -709,7 +744,7 @@ async function restoreBackup() {
   checkBackupReminder();
 }
 
-/* ---------- updates: new versions are offered, never forced mid-work ---------- */
+/* ---------- pwa updates ---------- */
 function applyUpdate() {
   updateRequested = true;
   navigator.serviceWorker.getRegistration().then(reg => {
@@ -735,7 +770,7 @@ function registerServiceWorker() {
   });
 }
 
-/* ---------- boot ---------- */
+/* ---------- execution boot ---------- */
 if (Bimo.store.get('bimo_theme', 'dark') === 'light') document.body.classList.add('light');
 applyLang();
 restoreSession();
@@ -743,4 +778,4 @@ watchSession();
 registerServiceWorker();
 </script>
 </body>
-                  </html>
+  </html>
