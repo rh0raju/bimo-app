@@ -54,8 +54,8 @@ Open <http://localhost:8000>.
 
 - `index.html` — existing app UI and inline application code
 - `bimo-core.js` — client-side account/session, audit, AI, and order-backup helpers
-- `seller-workspace.js` — seller workspace prototype module (not yet loaded by `index.html`)
-- `seller-low-stock.js` — separate low-stock module (not yet loaded by `index.html`)
+- `seller-workspace.js` — seller workspace prototype module (loaded by `index.html`)
+- `seller-low-stock.js` — separate low-stock module (loaded by `index.html`)
 - `sw.js` — service worker and offline app cache
 - `ux.js` — optional UX helper
 - `manifest.webmanifest` and `icon.*` — PWA metadata and icons
