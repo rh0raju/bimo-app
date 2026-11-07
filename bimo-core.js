@@ -76,7 +76,114 @@
     url: v => !v || RX_URL.test(String(v || '').trim()),
     password: p => {
       const s = String(p || '');
+      // Enforces at least 8 characters with lowercase and capital letters structural rules
       return s.length >= 8 && /[A-Z]/.test(s) && /[a-z]/.test(s);
+    }
+  };
+
+  /* ---------- ADVANCED MFA, USERNAMES & PERSISTENT LEASING MODULES ---------- */
+  
+  // High-fidelity Global Telecom Directory Matrix for 2FA Dropdowns
+  Bimo.countryCodesDirectory = [
+    { code: "+880", name: "Bangladesh (+880)" },
+    { code: "+1", name: "USA / Canada (+1)" },
+    { code: "+44", name: "United Kingdom (+44)" },
+    { code: "+91", name: "India (+91)" },
+    { code: "+92", name: "Pakistan (+92)" },
+    { code: "+971", name: "UAE (+971)" },
+    { code: "+61", name: "Australia (+61)" },
+    { code: "+65", name: "Singapore (+65)" },
+    { code: "+60", name: "Malaysia (+60)" },
+    { code: "+966", name: "Saudi Arabia (+966)" },
+    { code: "+81", name: "Japan (+81)" },
+    { code: "+49", name: "Germany (+49)" },
+    { code: "+33", name: "France (+33)" },
+    { code: "+86", name: "China (+86)" }
+  ];
+
+  // Helper method for 6-Digit dynamic challenge token allocations
+  Bimo.generate6DigitOTP = function () {
+    return String(Math.floor(100000 + Math.random() * 900000));
+  };
+
+  // Enforces unique usernames during platform registration
+  Bimo.isUsernameUnique = function (username) {
+    const cleanUser = String(username || '').trim().toLowerCase();
+    const registry = Bimo.store.get('BIMO_USER_REGISTRY', []);
+    return !registry.some(user => user.username === cleanUser);
+  };
+
+  // Persists the newly configured user onto local encrypted workspace blocks
+  Bimo.registerUser = async function (username, plainPassword, twoFactorMethod, twoFactorTarget) {
+    const cleanUser = String(username || '').trim().toLowerCase();
+    if (!Bimo.isUsernameUnique(cleanUser)) return false;
+    if (!Bimo.validate.password(plainPassword)) return false;
+
+    const registry = Bimo.store.get('BIMO_USER_REGISTRY', []);
+    const passHash = await Bimo.makePassRecord(plainPassword);
+
+    const newUserProfile = {
+      username: cleanUser,
+      passHash: passHash,
+      twoFactorMethod: twoFactorMethod,
+      twoFactorTarget: twoFactorTarget
+    };
+
+    registry.push(newUserProfile);
+    Bimo.store.set('BIMO_USER_REGISTRY', registry);
+    return newUserProfile;
+  };
+
+  // Verifies account parameters inside local storage arrays
+  Bimo.authenticateCredentials = async function (username, plainPassword) {
+    const cleanUser = String(username || '').trim().toLowerCase();
+    const registry = Bimo.store.get('BIMO_USER_REGISTRY', []);
+    const userMatch = registry.find(u => u.username === cleanUser);
+    
+    if (!userMatch) return null;
+    
+    const isValid = await Bimo.verifyPassRecord(plainPassword, userMatch);
+    return isValid ? userMatch : null;
+  };
+
+  // Creates session leases with adjustable validation permanence options
+  Bimo.createSessionLease = function (username, rememberMe) {
+    const cleanUser = String(username || '').trim().toLowerCase();
+    if (rememberMe) {
+      Bimo.store.set('BIMO_ACTIVE_SESSION_LEASE', { username: cleanUser, timestamp: Date.now() });
+    } else {
+      try {
+        global.sessionStorage.setItem('BIMO_VOLATILE_SESSION_LEASE', cleanUser);
+      } catch (e) {}
+    }
+  };
+
+  // Resolves whether a secure user profile retains a valid application lease at launch
+  Bimo.checkActiveSessionLease = function () {
+    const persistent = Bimo.store.get('BIMO_ACTIVE_SESSION_LEASE', null);
+    if (persistent && persistent.username) return persistent.username;
+
+    try {
+      return global.sessionStorage.getItem('BIMO_VOLATILE_SESSION_LEASE') || null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // Resets all terminal session states instantly across browser stores
+  Bimo.terminateSessionLease = function () {
+    Bimo.store.remove('BIMO_ACTIVE_SESSION_LEASE');
+    try {
+      global.sessionStorage.removeItem('BIMO_VOLATILE_SESSION_LEASE');
+    } catch (e) {}
+  };
+
+  // Unified visual toggle driver for masking or exposing input field password types
+  Bimo.togglePasswordVisibility = function (inputElementId) {
+    if (typeof document === 'undefined') return;
+    const element = document.getElementById(inputElementId);
+    if (element) {
+      element.type = element.type === 'password' ? 'text' : 'password';
     }
   };
 
