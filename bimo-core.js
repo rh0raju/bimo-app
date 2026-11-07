@@ -1,9 +1,7 @@
 /* BIMO Core — reusable client-side platform layer.
    Drop this file into any project and use the global `Bimo` object.
-   Provides: secure storage, password hashing, account management
-   (email/phone login), brute-force lockout, sessions with expiry,
-   tamper-evident hash-chained audit trail and order ledger,
-   PWA install handling, bring-your-own-key AI client, and backup. */
+   Provides: secure storage, password hashing, account management,
+   brute-force lockout, sessions, tamper-evident audit trails, and backup. */
 (function (global) {
   'use strict';
 
@@ -59,7 +57,6 @@
     return Bimo.randomHex(32);
   };
 
-  /* Passwords: salted SHA-256 (salt:hash). Legacy plaintext is upgraded on first login. */
   Bimo.makePassRecord = async function (pass) {
     const salt = Bimo.randomHex(16);
     return salt + ':' + (await Bimo.sha256(salt + ':' + pass));
